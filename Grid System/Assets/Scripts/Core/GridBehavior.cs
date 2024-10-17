@@ -6,12 +6,15 @@ namespace GridSystem.Core
 {
     public class GridBehavior : MonoBehaviour
     {
-        [SerializeField]
         private BuildingManager buildingManager;
-
         private List<Grid> grids = new List<Grid>();
         private HashSet<int> occupiedIndexes = new HashSet<int>();
         private GridManager gridManager;
+
+        public void Initialize(BuildingManager buildingManager)
+        {
+            this.buildingManager = buildingManager;
+        }
 
         private void Start()
         {

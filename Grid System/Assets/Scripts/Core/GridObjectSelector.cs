@@ -8,13 +8,10 @@ namespace GridSystem.Core
 {
     public class GridObjectSelector : MonoBehaviour
     {
-        [SerializeField]
         private BuildingManager buildingManager;
 
-        [SerializeField]
         private GridBehavior gridBehavior;
 
-        [SerializeField]
         private InputHandler inputHandler;
 
         private RaycastHandler raycastHandler;
@@ -25,26 +22,33 @@ namespace GridSystem.Core
 
         public event Action<Building> ObjectSelect;
 
+        public void Initialize(BuildingManager buildingManager, GridBehavior gridBehavior, InputHandler inputHandler, Camera mainCamera)
+        {
+            this.buildingManager = buildingManager;
+            this.gridBehavior = gridBehavior;
+            this.inputHandler = inputHandler;
+            this.mainCamera = mainCamera;
+        }
+
         private void Start()
         {
             raycastHandler = new RaycastHandler();
-            mainCamera = Camera.main;
             footprintGenerator = new FootprintGenerator();
             footprintGO = footprintGenerator.Generate();
 
-            inputHandler.OnMouseClick += HandleGridObjectSelection;
+            inputHandler.OnInputClick += HandleGridObjectSelection;
             buildingManager.BuildingRemoved += OnBuildingRemoved;
         }
 
         private void OnDestroy()
         {
-            inputHandler.OnMouseClick -= HandleGridObjectSelection;
+            inputHandler.OnInputClick -= HandleGridObjectSelection;
             buildingManager.BuildingRemoved -= OnBuildingRemoved;
         }
 
         private void HandleGridObjectSelection()
         {
-            if (GameStateManager.CurrentGameState == GameState.Building)
+            if (GridManager.Instance.CurrentGameState == GameState.Building)
                 return;
 
             if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
@@ -57,7 +61,7 @@ namespace GridSystem.Core
                 return;
             }
 
-            Vector3? position = raycastHandler.GetPositionFromRaycast(mainCamera, inputHandler.GetMousePosition());
+            Vector3? position = raycastHandler.RaycastNow(mainCamera, inputHandler.GetInputPosition());
             if (!position.HasValue) return;
             Building builtObject = gridBehavior.GetBuiltObjectInGrid(position.Value);
             if (builtObject == null) return;

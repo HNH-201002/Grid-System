@@ -11,7 +11,6 @@ namespace GridSystem.Visualization
 {
     public class PlacementPreview : MonoBehaviour
     {
-        private GridBehavior gridBehavior;
         private MeshRenderer meshRenderer;
         private InputHandler inputHandler;
         private CollisionHandler collisionHandler;
@@ -25,14 +24,14 @@ namespace GridSystem.Visualization
 
         private Camera mainCamera;
 
-        private BuildingTypeSelector buildingTypeSelector;
+        private PreviewManager previewManager;
 
         private Quaternion originalRotation;
-        public void Initialize(GridBehavior gridBehavior, BuildingTypeSelector buildingTypeSelector, BuildingType buildingType)
+
+        public void Initialize(PreviewManager previewManager, BuildingType buildingType)
         {
-            this.gridBehavior = gridBehavior;
             this.buildingType = buildingType;
-            this.buildingTypeSelector = buildingTypeSelector;
+            this.previewManager = previewManager;
         }
 
         private void Start()
@@ -53,7 +52,7 @@ namespace GridSystem.Visualization
             meshRenderer = GetComponent<MeshRenderer>();
             inputHandler = gameObject.AddComponent<InputHandler>();
             collisionHandler = gameObject.AddComponent<CollisionHandler>();
-            previousMousePosition = inputHandler.GetMousePosition();
+            previousMousePosition = inputHandler.GetInputPosition();
             collisionHandler.Initialize(GameTags.ConstructedObject);
             UpdatePreviewPosition(currentCellIndex, collisionHandler.IsBuildable);
             originalRotation = gameObject.transform.rotation;
@@ -61,10 +60,10 @@ namespace GridSystem.Visualization
 
         private void OnMouseDrag()
         {
-            if (inputHandler.HasMouseMoved(previousMousePosition))
+            if (inputHandler.HasInputMoved(previousMousePosition))
             {
                 RaycastAndUpdateCellIndex();
-                previousMousePosition = inputHandler.GetMousePosition();
+                previousMousePosition = inputHandler.GetInputPosition();
             }
 
             UpdatePreviewPosition(currentCellIndex, collisionHandler.IsBuildable);
@@ -72,10 +71,10 @@ namespace GridSystem.Visualization
 
         private void RaycastAndUpdateCellIndex()
         {
-            Vector3? hit = raycastHandler.GetPositionFromRaycast(mainCamera, inputHandler.GetMousePosition());
+            Vector3? hit = raycastHandler.RaycastIfMoved(mainCamera, inputHandler.GetInputPosition());
             if (hit != null)
             {
-                int newCellIndex = gridBehavior.GetGridIndexFromPosition(hit.Value);
+                int newCellIndex = GridManager.Instance.GetGridIndexFromPosition(hit.Value);
                 if (newCellIndex != currentCellIndex)
                 {
                     currentCellIndex = newCellIndex;
@@ -90,11 +89,11 @@ namespace GridSystem.Visualization
 
             Vector3 position = gameObject.transform.position;
             Quaternion rotation = gameObject.transform.rotation;
-            gridBehavior.PlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
+            GridManager.Instance.PlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
             SetMeshMaterial(gridManager.UnBuildableMaterial);
             gameObject.SetActive(false);
 
-            buildingTypeSelector.HidePreviewInstance();
+            previewManager.HidePreview();
             return true;
         }
 
@@ -105,15 +104,12 @@ namespace GridSystem.Visualization
 
         private void UpdatePreviewPosition(int currentCellIndex, bool isBuildable)
         {
-            if (gridBehavior == null)
-                return;
-
             Material targetMaterial = isBuildable ? gridManager.BuildableMaterial : gridManager.UnBuildableMaterial;
             SetMeshMaterial(targetMaterial);
 
             if (currentCellIndex != previousCellIndex && currentCellIndex != -1)
             {
-                Vector3 gridPosition = gridBehavior.GetGridPosition(currentCellIndex);
+                Vector3 gridPosition = GridManager.Instance.GetGridPosition(currentCellIndex);
                 gameObject.transform.position = new Vector3(gridPosition.x, 0.5f, gridPosition.z);
                 previousCellIndex = currentCellIndex;
             }

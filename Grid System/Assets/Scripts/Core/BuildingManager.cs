@@ -9,15 +9,19 @@ namespace GridSystem.Core
 {
     public class BuildingManager : MonoBehaviour, IBuildingManager
     {
-        [SerializeField]
         private List<BuildingPrefabData> buildingDataList;
 
         private Dictionary<BuildingType, GenericObjectPool<Building>> poolDictionary;
 
-        [SerializeField]
         private GridBehavior gridBehavior;
 
         public event Action<Building> BuildingRemoved;
+
+        public void Initialize(List<BuildingPrefabData> buildingDataList, GridBehavior gridBehavior)
+        {
+            this.buildingDataList = buildingDataList;
+            this.gridBehavior = gridBehavior;
+        }
 
         private void Start()
         {

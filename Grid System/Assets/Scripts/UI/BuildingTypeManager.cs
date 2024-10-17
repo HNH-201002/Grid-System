@@ -3,16 +3,16 @@ using GridSystem.Core;
 
 namespace GridSystem.UIManager
 {
-    public class BuildingTypeManager : MonoBehaviour
+    public class BuildingSelectorManager : MonoBehaviour
     {
-        public BuildingTypeSelector CurrentSelector { get; private set; }
+        private PreviewManager CurrentSelector;
 
-        public void SetActiveSelector(BuildingTypeSelector newSelector)
+        public void SetActiveSelector(PreviewManager newSelector)
         {
             if (CurrentSelector != null && CurrentSelector != newSelector)
             {
-                GameStateManager.SetGameState(GameState.None);
-                CurrentSelector.HidePreviewInstance();
+                GridManager.Instance.SetGameState(GameState.None);
+                CurrentSelector.HidePreview();
             }
 
             CurrentSelector = newSelector;

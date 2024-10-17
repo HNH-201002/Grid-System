@@ -5,33 +5,54 @@ namespace GridSystem.InputManagement
 {
     public class InputHandler : MonoBehaviour
     {
-        public event Action OnMouseClick;
+        public event Action OnInputClick;
+
+        private Vector3 previousInputPosition;
 
         private void Update()
         {
-            if (IsMouseClicked())
+            if (IsInputClicked())
             {
-                OnMouseClick?.Invoke();
+                OnInputClick?.Invoke();
             }
+
+            previousInputPosition = GetInputPosition();
         }
 
-        public bool IsMouseClicked()
+        public bool IsInputClicked()
         {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                return touch.phase == TouchPhase.Began;
+            }
+
             return Input.GetMouseButtonDown(0);
         }
 
-        public bool IsMouseHolding()
+        public bool IsInputHolding()
         {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                return touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved;
+            }
+
             return Input.GetMouseButton(0);
         }
 
-        public bool HasMouseMoved(Vector3 previousMousePosition)
+        public bool HasInputMoved(Vector3 previousPosition)
         {
-            return Input.mousePosition != previousMousePosition;
+            return GetInputPosition() != previousPosition;
         }
 
-        public Vector3 GetMousePosition()
+        public Vector3 GetInputPosition()
         {
+            if (Input.touchCount > 0)
+            {
+                return Input.GetTouch(0).position;
+            }
+
             return Input.mousePosition;
         }
     }
