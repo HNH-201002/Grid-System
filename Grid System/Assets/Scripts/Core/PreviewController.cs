@@ -1,46 +1,27 @@
-using GridSystem.Data;
 using UnityEngine;
-using UnityEngine.UI;
+using GridSystem.Data;
 using GridSystem.Core;
 using GridSystem.Utilities;
 
 namespace GridSystem.UIManager
 {
-    public class BuildingPreviewToggle : MonoBehaviour
+    public class PreviewController
     {
-        [SerializeField]
         private BuildingPrefabData buildingPrefabData;
-
-        [SerializeField]
-        private Button button;
-
         private Camera mainCamera;
         private PreviewManager previewManager;
         private RaycastHandler raycastHandler = new RaycastHandler();
-        private enum PreviewState { Off, Active }
+
+        public enum PreviewState { Off, Active }
         private PreviewState currentState = PreviewState.Off;
 
-        private void Start()
+        public PreviewController(BuildingPrefabData data, PreviewManager previewManager, Camera camera)
         {
-            mainCamera = Camera.main;
-
-            if (buildingPrefabData.Prefab == null)
-            {
-                Debug.LogError("Prefab is missing. Please assign the prefab in BuildingPrefabData.");
-                button.interactable = false;
-                return;
-            }
-
-            previewManager = new PreviewManager(buildingPrefabData.Prefab);
-            button.onClick.AddListener(HandleButtonClick);
+            buildingPrefabData = data;
+            this.previewManager = previewManager;
+            mainCamera = camera;
         }
-
-        private void OnDestroy()
-        {
-            button.onClick.RemoveListener(HandleButtonClick);
-        }
-
-        private void HandleButtonClick()
+        public void TogglePreviewState()
         {
             if (currentState == PreviewState.Off)
             {
@@ -64,6 +45,7 @@ namespace GridSystem.UIManager
         {
             GridManager.Instance.SetActiveSelector(null);
             previewManager.HidePreview();
+            currentState = PreviewState.Off;
         }
 
         private void ActivatePreview()

@@ -1,5 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
-using GridSystem.Visualization;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace GridSystem.Core
@@ -19,10 +20,10 @@ namespace GridSystem.Core
         private void Start()
         {
             gridManager = GridManager.Instance;
-            DrawGrid(gridManager.MinScaled, gridManager.MaxScaled, gridManager.GridSizeX, gridManager.GridSizeZ);
+            StartCoroutine(DrawGrid(gridManager.MinScaled, gridManager.MaxScaled, gridManager.GridSizeX, gridManager.GridSizeZ));
         }
 
-        private void DrawGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
+        private IEnumerator DrawGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
         {
             float xLimit = maxScaled.x - gridSizeX / 2;
             float zLimit = maxScaled.z - gridSizeZ / 2;
@@ -35,21 +36,18 @@ namespace GridSystem.Core
                 for (float z = minScaled.z; z < zLimit; z += gridSizeZ)
                 {
                     Vector3 position = new Vector3(x + centerOffsetX, 0.01f, z + centerOffsetZ);
-                    Grid grid = new Grid(position);
-                    grids.Add(grid);
+                    grids.Add(new Grid(position));
+                    if (Time.frameCount % 20 == 0)
+                        yield return null;
                 }
             }
         }
 
-        public void PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
+        public async Task PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
             Bounds bounds = boxCollider.bounds;
 
-            int xIndexCount;
-            int zIndexCount;
-            List<int> gridIndex;
-
-            (xIndexCount, zIndexCount, gridIndex) = GetGridIndexesFromBounds(bounds);
+            var (xIndexCount, zIndexCount, gridIndex) = await GetGridIndexesFromBoundsAsync(bounds);
 
             if (IsOccupied(gridIndex))
                 return;
@@ -103,38 +101,38 @@ namespace GridSystem.Core
             }
         }
 
-        private (int xCount, int zCount, List<int> indexes) GetGridIndexesFromBounds(Bounds bounds)
+        private async Task<(int xCount, int zCount, List<int> indexes)> GetGridIndexesFromBoundsAsync(Bounds bounds)
         {
-            List<int> indexes = new List<int>();
-
-            Vector3 minScaled = gridManager.MinScaled;
-            int gridWidth = gridManager.GridWidth;
-
-            int xStartIndex = Mathf.FloorToInt((bounds.min.x - minScaled.x) / gridManager.GridSizeX);
-            int zStartIndex = Mathf.FloorToInt((bounds.min.z - minScaled.z) / gridManager.GridSizeZ);
-
-            int xEndIndex = Mathf.FloorToInt((bounds.max.x - minScaled.x) / gridManager.GridSizeX);
-            int zEndIndex = Mathf.FloorToInt((bounds.max.z - minScaled.z) / gridManager.GridSizeZ);
-
-            int xCount = xEndIndex - xStartIndex + 1;
-            int zCount = zEndIndex - zStartIndex + 1;
-
-            for (int xIndex = xStartIndex; xIndex <= xEndIndex; xIndex++)
+            return await Task.Run(() =>
             {
-                for (int zIndex = zStartIndex; zIndex <= zEndIndex; zIndex++)
-                {
-                    int gridIndex = xIndex * gridWidth + zIndex;
+                List<int> indexes = new List<int>();
 
-                    if (gridIndex >= 0 && gridIndex < grids.Count)
+                Vector3 minScaled = gridManager.MinScaled;
+                int gridWidth = gridManager.GridWidth;
+
+                int xStartIndex = Mathf.FloorToInt((bounds.min.x - minScaled.x) / gridManager.GridSizeX);
+                int zStartIndex = Mathf.FloorToInt((bounds.min.z - minScaled.z) / gridManager.GridSizeZ);
+
+                int xEndIndex = Mathf.FloorToInt((bounds.max.x - minScaled.x) / gridManager.GridSizeX);
+                int zEndIndex = Mathf.FloorToInt((bounds.max.z - minScaled.z) / gridManager.GridSizeZ);
+
+                int xCount = xEndIndex - xStartIndex + 1;
+                int zCount = zEndIndex - zStartIndex + 1;
+
+                for (int xIndex = xStartIndex; xIndex <= xEndIndex; xIndex++)
+                {
+                    for (int zIndex = zStartIndex; zIndex <= zEndIndex; zIndex++)
                     {
-                        indexes.Add(gridIndex);
+                        int gridIndex = xIndex * gridWidth + zIndex;
+                        if (gridIndex >= 0 && gridIndex < grids.Count)
+                        {
+                            indexes.Add(gridIndex);
+                        }
                     }
                 }
-            }
-
-            return (xCount, zCount, indexes);
+                return (xCount, zCount, indexes);
+            });
         }
-
 
         public int GetGridIndexFromPosition(Vector3 position)
         {

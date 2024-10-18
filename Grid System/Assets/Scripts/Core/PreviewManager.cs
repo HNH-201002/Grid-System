@@ -8,7 +8,7 @@ namespace GridSystem.Core
 {
     public class PreviewManager
     {
-        private BuildingPreviewToggle buildingPreviewToggle;
+        private PreviewController previewController;
         private ObjectPool<GameObject> previewPool;
         private GameObject previewInstance;
         private PlacementPreview previewComponent;
@@ -36,19 +36,19 @@ namespace GridSystem.Core
                 previewPool.ReturnToPool(previewInstance);
                 previewInstance = null;
                 previewComponent = null;
-                buildingPreviewToggle.SetDeactivePreviewMode();
+                previewController.SetDeactivePreviewMode();
                 GridManager.Instance.SetGameState(GameState.None);
             }
         }
 
-        public void SetupPreviewComponent(BuildingPreviewToggle buildingPreviewToggle, BuildingPrefabData data)
+        public void SetupPreviewComponent(PreviewController previewController, BuildingPrefabData data)
         {
             previewComponent = previewInstance.GetComponent<PlacementPreview>() ??
                                previewInstance.AddComponent<PlacementPreview>();
 
             previewComponent.Initialize(this, data.BuildingType);
             previewComponent.ResetPreview();
-            this.buildingPreviewToggle = buildingPreviewToggle;
+            this.previewController = previewController;
             GridManager.Instance.SetPlacementPreviewInstance(previewComponent);
         }
     }

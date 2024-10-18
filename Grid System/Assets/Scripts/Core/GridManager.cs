@@ -209,6 +209,13 @@ namespace GridSystem.Core
             buildingManipulator.SetPlacementPreview(placementPreview);
         }
 
+
+        public PreviewController InitializePreviewController(BuildingPrefabData buildingPrefabData)
+        {
+            var previewManager = new PreviewManager(buildingPrefabData.Prefab);
+            return new PreviewController(buildingPrefabData, previewManager, mainCamera);
+        }
+
         private void OnDestroy()
         {
             gridObjectSelector.ObjectSelect -= OnObjectSelected;

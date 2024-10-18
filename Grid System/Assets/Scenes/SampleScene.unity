@@ -768,17 +768,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 468938591382214325, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
   m_PrefabInstance: {fileID: 653620059}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &653620062 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2632092897291704336, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
-  m_PrefabInstance: {fileID: 653620059}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 653620061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &653620063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -791,9 +780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b596a133fdaed24a8605069f14f3beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectInteractionUI: {fileID: 1118241562}
   buildingPrefabData: {fileID: 11400000, guid: bbe3a4c963927c44e90613dde50df63d, type: 2}
-  button: {fileID: 653620062}
 --- !u!1 &669809049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,17 +1077,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 468938591382214325, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
   m_PrefabInstance: {fileID: 718160923}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &718160926 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2632092897291704336, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
-  m_PrefabInstance: {fileID: 718160923}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 718160925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &718160927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1113,9 +1089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b596a133fdaed24a8605069f14f3beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectInteractionUI: {fileID: 1118241562}
   buildingPrefabData: {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}
-  button: {fileID: 718160926}
 --- !u!1 &868466010
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,7 +1172,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1031043720}
   m_HandleRect: {fileID: 1031043719}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1790,17 +1764,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 468938591382214325, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
   m_PrefabInstance: {fileID: 1221792332}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1221792335 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2632092897291704336, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
-  m_PrefabInstance: {fileID: 1221792332}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1221792334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1221792336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1813,9 +1776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b596a133fdaed24a8605069f14f3beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectInteractionUI: {fileID: 1118241562}
   buildingPrefabData: {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}
-  button: {fileID: 1221792335}
 --- !u!1 &1341668995
 GameObject:
   m_ObjectHideFlags: 0
@@ -2675,17 +2636,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 468938591382214325, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
   m_PrefabInstance: {fileID: 7555682572598788106}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7555682572598788108 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2632092897291704336, guid: 0ef49d0e8005d784e91a0590aa1d34b8, type: 3}
-  m_PrefabInstance: {fileID: 7555682572598788106}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7555682572598788107}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7555682572598788109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2698,9 +2648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b596a133fdaed24a8605069f14f3beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectInteractionUI: {fileID: 1118241562}
   buildingPrefabData: {fileID: 11400000, guid: bbe3a4c963927c44e90613dde50df63d, type: 2}
-  button: {fileID: 7555682572598788108}
 --- !u!1 &7736979780020258020
 GameObject:
   m_ObjectHideFlags: 0
