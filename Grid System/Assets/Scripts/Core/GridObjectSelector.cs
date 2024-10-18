@@ -48,35 +48,40 @@ namespace GridSystem.Core
 
         private void HandleGridObjectSelection()
         {
-            if (GridManager.Instance.CurrentGameState == GameState.Building)
-                return;
+            if (GridManager.Instance.CurrentGameState == GameState.Building) return;
 
-            if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
-            {
-                if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
-                    return;
-            }
-            else if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
+            if (IsPointerOverUI()) return;
 
             Vector3? position = raycastHandler.RaycastNow(mainCamera, inputHandler.GetInputPosition());
             if (!position.HasValue) return;
-            Building builtObject = gridBehavior.GetBuiltObjectInGrid(position.Value);
-            if (builtObject == null) return;
 
-            if (currentBuiltObject != builtObject)
+            Building selectedObject = gridBehavior.GetBuiltObjectInGrid(position.Value);
+
+            UpdateSelectedObject(selectedObject);
+        }
+
+        private bool IsPointerOverUI()
+        {
+            if (Input.touchCount > 0)
+                return EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId);
+
+            return EventSystem.current.IsPointerOverGameObject();
+        }
+
+        private void UpdateSelectedObject(Building selectedObject)
+        {
+            if (currentBuiltObject == selectedObject)
             {
                 currentBuiltObject?.ToggleFootprintDisplay(footprintGO.transform);
-                builtObject.ToggleFootprintDisplay(footprintGO.transform);
-                currentBuiltObject = builtObject;
-                ObjectSelect?.Invoke(currentBuiltObject);
+                return;
             }
-            else
-            {
-                currentBuiltObject.ToggleFootprintDisplay(footprintGO.transform);
-            }
+
+            currentBuiltObject?.ToggleFootprintDisplay(footprintGO.transform);
+
+            currentBuiltObject = selectedObject;
+            currentBuiltObject?.ToggleFootprintDisplay(footprintGO.transform);
+
+            ObjectSelect?.Invoke(currentBuiltObject);
         }
 
         private void OnBuildingRemoved(Building build)
