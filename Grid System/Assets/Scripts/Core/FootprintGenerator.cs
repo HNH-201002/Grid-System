@@ -4,7 +4,7 @@ namespace GridSystem.Core
 {
     public class FootprintGenerator
     {
-        private const float footprintSize = 0.5f;
+        private const float footprintSize = 1;
         private static Material footprintMaterial;
 
         public GameObject Generate()
@@ -13,7 +13,7 @@ namespace GridSystem.Core
             footprintObj.transform.localPosition = Vector3.zero;
 
             MeshFilter filter = footprintObj.AddComponent<MeshFilter>();
-            filter.mesh = CreateFootprintMesh();
+            filter.mesh = CreateFootprintMesh(footprintSize, footprintSize);
 
             MeshRenderer renderer = footprintObj.AddComponent<MeshRenderer>();
             renderer.material = GetOrCreateFootprintMaterial();
@@ -22,16 +22,16 @@ namespace GridSystem.Core
             return footprintObj;
         }
 
-        private Mesh CreateFootprintMesh()
+        private Mesh CreateFootprintMesh(float xSize, float zSize)
         {
             Mesh mesh = new Mesh();
 
             Vector3[] vertices = new Vector3[4]
             {
-                new Vector3(-footprintSize, 0, -footprintSize),
-                new Vector3(footprintSize, 0, -footprintSize),
-                new Vector3(-footprintSize, 0, footprintSize),
-                new Vector3(footprintSize, 0, footprintSize)
+                new Vector3(-xSize / 2, 0, -zSize / 2),
+                new Vector3(xSize / 2, 0, -zSize / 2),
+                new Vector3(-xSize / 2, 0, zSize / 2),
+                new Vector3(xSize / 2, 0, zSize / 2)
             };
 
             int[] triangles = new int[6]
@@ -56,7 +56,6 @@ namespace GridSystem.Core
                     color = Color.green
                 };
             }
-
             return footprintMaterial;
         }
     }

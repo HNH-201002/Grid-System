@@ -2382,6 +2382,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bbe3a4c963927c44e90613dde50df63d, type: 2}
   - {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}
   mainCamera: {fileID: 963194227}
+  initialSpawnPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2003952098
 MonoBehaviour:
   m_ObjectHideFlags: 0

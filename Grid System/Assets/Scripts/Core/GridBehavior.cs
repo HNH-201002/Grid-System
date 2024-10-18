@@ -42,7 +42,6 @@ namespace GridSystem.Core
             }
         }
 
-
         public void PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
             Bounds bounds = boxCollider.bounds;
@@ -60,8 +59,11 @@ namespace GridSystem.Core
             building.transform.position = position;
             building.transform.rotation = rotation;
 
-            float xSize = xIndexCount * gridManager.GridSizeX;
-            float zSize = zIndexCount * gridManager.GridSizeZ;
+            float xSize = xIndexCount * gridManager.GridSizeX + 1;
+            float zSize = zIndexCount * gridManager.GridSizeZ + 1;
+
+            xSize = xSize % 2 == 0 ? xSize + 1 : xSize;
+            zSize = zSize % 2 == 0 ? zSize + 1 : zSize;
 
             building.Initialize(xSize, zSize, gridIndex);
 
@@ -118,8 +120,8 @@ namespace GridSystem.Core
             int xEndIndex = Mathf.FloorToInt((bounds.max.x - minScaled.x) / gridManager.GridSizeX);
             int zEndIndex = Mathf.FloorToInt((bounds.max.z - minScaled.z) / gridManager.GridSizeZ);
 
-            int xCount = xEndIndex - xStartIndex + 1;
-            int zCount = zEndIndex - zStartIndex + 1;
+            int xCount = xEndIndex - xStartIndex;
+            int zCount = zEndIndex - zStartIndex;
 
             for (int xIndex = xStartIndex; xIndex <= xEndIndex; xIndex++)
             {
