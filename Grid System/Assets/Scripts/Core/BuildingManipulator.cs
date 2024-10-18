@@ -8,7 +8,7 @@ namespace GridSystem.Core
     {
         private Building building;
         private PlacementPreview placementPreview;
-        private int angle;
+        private int currentRotationAngle;
 
         public event Action BuildingCompleted;
 
@@ -24,25 +24,31 @@ namespace GridSystem.Core
 
         public void RotateLeft()
         {
-            angle -= 90;
-            ApplyRotation();
+            RotateBuilding(-90);
         }
 
         public void RotateRight()
         {
-            angle += 90;
-            ApplyRotation();
+            RotateBuilding(90);
+        }
+
+        private void RotateBuilding(int angle)
+        {
+            currentRotationAngle += angle;
+            if (placementPreview != null)
+            {
+                placementPreview.transform.rotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            }
+            else if (building != null)
+            {
+                building.transform.rotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            }
         }
 
         public void DeleteBuilding()
         {
             if (building != null)
             {
-                if (GridManager.Instance.CurrentGameState == GameState.Building)
-                {
-                    building = null;
-                    return;
-                }
                 GridManager.Instance.RemoveBuilding(building);
                 building = null;
             }
@@ -50,24 +56,26 @@ namespace GridSystem.Core
 
         public void AcceptPlacement()
         {
-            if (placementPreview != null && placementPreview.Build())
+            if (placementPreview == null)
+                return;
+
+            if (!placementPreview.isActiveAndEnabled)
             {
-                placementPreview = null;
+                CleanupPlacement();
+                return;
+            }
+
+            if (placementPreview.Build())
+            {
+                CleanupPlacement();
                 BuildingCompleted?.Invoke();
             }
         }
 
-        private void ApplyRotation()
+        private void CleanupPlacement()
         {
-            if (placementPreview != null)
-            {
-                placementPreview.transform.rotation = Quaternion.Euler(0, angle, 0);
-            }
-            else if (building != null)
-            {
-                building.transform.rotation = Quaternion.Euler(0, angle, 0);
-            }
+            placementPreview = null;
+            building = null;
         }
     }
-
 }

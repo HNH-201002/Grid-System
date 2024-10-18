@@ -15,11 +15,14 @@ namespace GridSystem.UIManager
         public enum PreviewState { Off, Active }
         private PreviewState currentState = PreviewState.Off;
 
-        public PreviewController(BuildingPrefabData data, PreviewManager previewManager, Camera camera)
+        private Vector3 initialSpawnPoint;
+
+        public PreviewController(BuildingPrefabData data, PreviewManager previewManager, Camera camera, Vector3 initialSpawnPoint)
         {
             buildingPrefabData = data;
             this.previewManager = previewManager;
             mainCamera = camera;
+            this.initialSpawnPoint = initialSpawnPoint;
         }
         public void TogglePreviewState()
         {
@@ -36,7 +39,6 @@ namespace GridSystem.UIManager
         private void ActivatePreviewMode()
         {
             currentState = PreviewState.Active;
-            GridManager.Instance.SetGameState(GameState.Building);
             GridManager.Instance.SetActiveSelector(previewManager);
             ActivatePreview();
         }
@@ -50,12 +52,9 @@ namespace GridSystem.UIManager
 
         private void ActivatePreview()
         {
-            if (raycastHandler.RaycastNow(mainCamera, Input.mousePosition) is Vector3 hitPoint)
-            {
-                previewManager.ActivatePreview(new Vector3(hitPoint.x, 0.5f, hitPoint.z));
-                previewManager.SetupPreviewComponent(this, buildingPrefabData);
-                GridManager.Instance.TurnOffFootprint();
-            }
+            previewManager.ActivatePreview(initialSpawnPoint);
+            previewManager.SetupPreviewComponent(this, buildingPrefabData);
+            GridManager.Instance.TurnOffFootprint();
         }
 
         public void SetDeactivePreviewMode()

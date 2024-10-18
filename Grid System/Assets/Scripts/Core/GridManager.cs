@@ -33,6 +33,10 @@ namespace GridSystem.Core
         [SerializeField]
         private Camera mainCamera;
 
+        [Tooltip("Initial spawn position of the building")]
+        [SerializeField]
+        private Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
+
         public static GridManager Instance { get; private set; }
 
         public float GridSizeX { get; private set; }
@@ -59,7 +63,8 @@ namespace GridSystem.Core
 
         public event Action BuildCompleted;
 
-        public GameState CurrentGameState { get; set; }
+        public GameState CurrentGameState { get; private set; }
+
 
         private void Awake()
         {
@@ -209,11 +214,10 @@ namespace GridSystem.Core
             buildingManipulator.SetPlacementPreview(placementPreview);
         }
 
-
         public PreviewController InitializePreviewController(BuildingPrefabData buildingPrefabData)
         {
             var previewManager = new PreviewManager(buildingPrefabData.Prefab);
-            return new PreviewController(buildingPrefabData, previewManager, mainCamera);
+            return new PreviewController(buildingPrefabData, previewManager, mainCamera, initialSpawnPoint);
         }
 
         private void OnDestroy()

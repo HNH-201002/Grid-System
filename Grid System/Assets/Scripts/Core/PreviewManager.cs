@@ -23,9 +23,10 @@ namespace GridSystem.Core
             if (previewInstance == null)
             {
                 previewInstance = previewPool.GetFromPool();
-                previewInstance.transform.position = position;
             }
 
+            previewInstance.transform.position = position;
+            GridManager.Instance.SetGameState(GameState.Building);
             return previewInstance;
         }
 

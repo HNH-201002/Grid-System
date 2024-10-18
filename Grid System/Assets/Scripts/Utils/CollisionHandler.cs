@@ -24,8 +24,7 @@ namespace GridSystem.Core.PhysicsCollider
 
         private void OnCollisionEnter(Collision collision)
         {
-            if ((targetTag != null && collision.collider.CompareTag(targetTag)) ||
-                (targetLayer != -1 && collision.gameObject.layer == targetLayer))
+            if (IsRelevantCollision(collision.collider))
             {
                 collisionCounter++;
                 IsBuildable = false;
@@ -34,12 +33,17 @@ namespace GridSystem.Core.PhysicsCollider
 
         private void OnCollisionExit(Collision collision)
         {
-            if ((targetTag != null && collision.collider.CompareTag(targetTag)) ||
-                (targetLayer != -1 && collision.gameObject.layer == targetLayer))
+            if (IsRelevantCollision(collision.collider))
             {
                 collisionCounter--;
                 IsBuildable = collisionCounter <= 0;
             }
+        }
+
+        private bool IsRelevantCollision(Collider collider)
+        {
+            return (targetTag != null && collider.CompareTag(targetTag)) ||
+                (targetLayer != -1 && gameObject.layer == targetLayer);
         }
     }
 }

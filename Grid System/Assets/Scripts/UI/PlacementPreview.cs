@@ -1,11 +1,9 @@
 using UnityEngine;
 using GridSystem.Core;
-using GridSystem.UIManager;
 using GridSystem.Tags;
 using GridSystem.InputManagement;
 using GridSystem.Core.PhysicsCollider;
 using GridSystem.Utilities;
-using Unity.VisualScripting;
 
 namespace GridSystem.Visualization
 {
@@ -56,9 +54,15 @@ namespace GridSystem.Visualization
             collisionHandler.Initialize(GameTags.ConstructedObject);
             UpdatePreviewPosition(currentCellIndex, collisionHandler.IsBuildable);
             originalRotation = gameObject.transform.rotation;
+            inputHandler.OnInputHold += UpdatePreviewPosition;
         }
 
-        private void OnMouseDrag()
+        private void OnDestroy()
+        {
+            inputHandler.OnInputHold -= UpdatePreviewPosition;
+        }
+
+        private void UpdatePreviewPosition()
         {
             if (inputHandler.HasInputMoved(previousMousePosition))
             {
@@ -125,7 +129,6 @@ namespace GridSystem.Visualization
 
         public void ResetPreview()
         {
-            transform.position = Vector3.zero;
             previousCellIndex = -1;
             currentCellIndex = -1;
 

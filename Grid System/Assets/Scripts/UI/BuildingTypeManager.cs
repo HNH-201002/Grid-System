@@ -11,7 +11,6 @@ namespace GridSystem.UIManager
         {
             if (CurrentSelector != null && CurrentSelector != newSelector)
             {
-                GridManager.Instance.SetGameState(GameState.None);
                 CurrentSelector.HidePreview();
             }
 

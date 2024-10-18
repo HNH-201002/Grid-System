@@ -11,39 +11,42 @@ namespace GridSystem.Utilities
         /// <summary>
         /// Executes the raycast only if the mouse has moved significantly since the last check.
         /// </summary>
-        public Vector3? RaycastIfMoved(Camera camera, Vector3 mousePosition)
+        public Vector3? RaycastIfMoved(Camera camera, Vector3 mousePosition, LayerMask? targetLayer = null)
         {
             if (camera == null) return null;
 
-            if (Vector3.Distance(lastMousePosition, mousePosition) < epsilon)
+            if ((lastMousePosition - mousePosition).sqrMagnitude < epsilon * epsilon)
             {
                 return lastHitPoint;
             }
 
             lastMousePosition = mousePosition;
-            return DoRaycast(camera, mousePosition);
+            return DoRaycast(camera, mousePosition, targetLayer);
         }
 
         /// <summary>
         /// Performs the raycast immediately, without any condition checks.
         /// </summary>
-        public Vector3? RaycastNow(Camera camera, Vector3 mousePosition)
+        public Vector3? RaycastNow(Camera camera, Vector3 mousePosition, LayerMask? targetLayer = null)
         {
             if (camera == null) return null;
 
-            return DoRaycast(camera, mousePosition);
+            return DoRaycast(camera, mousePosition, targetLayer);
         }
 
-        private Vector3? DoRaycast(Camera camera, Vector3 mousePosition)
+        private Vector3? DoRaycast(Camera camera, Vector3 mousePosition, LayerMask? targetLayer = null)
         {
             Ray ray = camera.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
+
+            int layerMaskValue = targetLayer?.value ?? ~0;
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 1000f, layerMaskValue))
             {
                 lastHitPoint = hit.point;
-                return hit.point;
+                return lastHitPoint;
             }
 
-            return Vector3.zero;
+            return null;
         }
     }
 }

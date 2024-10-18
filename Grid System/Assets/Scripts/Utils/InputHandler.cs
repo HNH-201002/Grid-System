@@ -6,8 +6,7 @@ namespace GridSystem.InputManagement
     public class InputHandler : MonoBehaviour
     {
         public event Action OnInputClick;
-
-        private Vector3 previousInputPosition;
+        public event Action OnInputHold;
 
         private void Update()
         {
@@ -16,7 +15,10 @@ namespace GridSystem.InputManagement
                 OnInputClick?.Invoke();
             }
 
-            previousInputPosition = GetInputPosition();
+            if (IsInputHolding())
+            {
+                OnInputHold?.Invoke();
+            }
         }
 
         public bool IsInputClicked()
