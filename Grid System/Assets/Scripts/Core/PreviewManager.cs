@@ -12,10 +12,12 @@ namespace GridSystem.Core
         private ObjectPool<GameObject> previewPool;
         private GameObject previewInstance;
         private PlacementPreview previewComponent;
+        private GridManager gridManager;
 
-        public PreviewManager(GameObject prefab)
+        public PreviewManager(GridManager gridManager, GameObject prefab)
         {
             previewPool = new ObjectPool<GameObject>(prefab, 1);
+            this.gridManager = gridManager;
         }
 
         public GameObject ActivatePreview(Vector3 position)
@@ -26,7 +28,7 @@ namespace GridSystem.Core
             }
 
             previewInstance.transform.position = position;
-            GridManager.Instance.SetGameState(GameState.Building);
+            gridManager.SetGameState(GameState.Building);
             return previewInstance;
         }
 
@@ -38,7 +40,7 @@ namespace GridSystem.Core
                 previewInstance = null;
                 previewComponent = null;
                 previewController.SetDeactivePreviewMode();
-                GridManager.Instance.SetGameState(GameState.None);
+                gridManager.SetGameState(GameState.None);
             }
         }
 
@@ -47,10 +49,10 @@ namespace GridSystem.Core
             previewComponent = previewInstance.GetComponent<PlacementPreview>() ??
                                previewInstance.AddComponent<PlacementPreview>();
 
-            previewComponent.Initialize(this, data.BuildingType);
+            previewComponent.Initialize(gridManager, this, data.BuildingType);
             previewComponent.ResetPreview();
             this.previewController = previewController;
-            GridManager.Instance.SetPlacementPreviewInstance(previewComponent);
+            gridManager.SetPlacementPreviewInstance(previewComponent);
         }
     }
 }

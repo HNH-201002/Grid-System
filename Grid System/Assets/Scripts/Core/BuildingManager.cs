@@ -13,11 +13,11 @@ namespace GridSystem.Core
 
         private Dictionary<BuildingType, GenericObjectPool<Building>> poolDictionary;
 
-        private GridBehavior gridBehavior;
+        private IGridBehavior gridBehavior;
 
         public event Action<Building> BuildingRemoved;
 
-        public void Initialize(List<BuildingPrefabData> buildingDataList, GridBehavior gridBehavior)
+        public void Initialize(List<BuildingPrefabData> buildingDataList, IGridBehavior gridBehavior)
         {
             this.buildingDataList = buildingDataList;
             this.gridBehavior = gridBehavior;
@@ -38,7 +38,7 @@ namespace GridSystem.Core
         {
             BuildingRemoved?.Invoke(building);
             List<int> indexes = building.Indexes;
-            gridBehavior.SetOccupied(indexes, false);
+            gridBehavior.SetGridOccupied(indexes, false);
             poolDictionary[building.BuildingPrefabData.BuildingType].ReturnToPool(building);
         }
 

@@ -4,25 +4,25 @@ using UnityEngine;
 
 namespace GridSystem.Core
 {
-    public class GridBehavior : MonoBehaviour
+    public class GridBehavior : MonoBehaviour, IGridBehavior
     {
-        private BuildingManager buildingManager;
+        private IBuildingManager buildingManager;
         private List<Grid> grids = new List<Grid>();
         private HashSet<int> occupiedIndexes = new HashSet<int>();
         private GridManager gridManager;
 
-        public void Initialize(BuildingManager buildingManager)
+        public void Initialize(GridManager gridManager, IBuildingManager buildingManager)
         {
             this.buildingManager = buildingManager;
+            this.gridManager = gridManager;
         }
 
         private void Start()
         {
-            gridManager = GridManager.Instance;
-            StartCoroutine(DrawGrid(gridManager.MinScaled, gridManager.MaxScaled, gridManager.GridSizeX, gridManager.GridSizeZ));
+            StartCoroutine(GenerateGrid(gridManager.MinScaled, gridManager.MaxScaled, gridManager.GridSizeX, gridManager.GridSizeZ));
         }
 
-        private IEnumerator DrawGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
+        private IEnumerator GenerateGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
         {
             float xLimit = maxScaled.x - gridSizeX / 2;
             float zLimit = maxScaled.z - gridSizeZ / 2;
@@ -42,7 +42,7 @@ namespace GridSystem.Core
             }
         }
 
-        public void PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
+        public void PlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
             Bounds bounds = boxCollider.bounds;
 
@@ -52,7 +52,7 @@ namespace GridSystem.Core
 
             (xIndexCount, zIndexCount, gridIndex) = GetGridIndexesFromBounds(bounds);
 
-            if (IsOccupied(gridIndex))
+            if (AreIndexesOccupied(gridIndex))
                 return;
 
             Building building = buildingManager.Build(buildingType);
@@ -67,10 +67,10 @@ namespace GridSystem.Core
 
             building.Initialize(xSize, zSize, gridIndex);
 
-            SetOccupied(gridIndex, true, building);
+            SetGridOccupied(gridIndex, true, building);
         }
 
-        private bool IsOccupied(List<int> indexes)
+        private bool AreIndexesOccupied(List<int> indexes)
         {
             foreach (int index in indexes)
             {
@@ -82,12 +82,12 @@ namespace GridSystem.Core
             return false;
         }
 
-        private bool IsIndexOccupied(int index)
+        public bool IsIndexOccupied(int index)
         {
             return occupiedIndexes.Contains(index);
         }
 
-        public void SetOccupied(List<int> indexes, bool isOccupied, Building build = null)
+        public void SetGridOccupied(List<int> indexes, bool isOccupied, Building build = null)
         {
             foreach (int index in indexes)
             {
@@ -140,7 +140,7 @@ namespace GridSystem.Core
         }
 
 
-        public int GetGridIndexFromPosition(Vector3 position)
+        public int GetGridIndex(Vector3 position)
         {
             int xIndex = Mathf.FloorToInt((position.x - gridManager.MinScaled.x) / gridManager.GridSizeX);
             int zIndex = Mathf.FloorToInt((position.z - gridManager.MinScaled.z) / gridManager.GridSizeZ);
@@ -156,7 +156,7 @@ namespace GridSystem.Core
             return gridIndex;
         }
 
-        public Vector3 GetGridPosition(int gridIndex)
+        public Vector3 GetGridWorldPosition(int gridIndex)
         {
             if (gridIndex >= 0 && gridIndex < grids.Count)
             {
@@ -167,9 +167,9 @@ namespace GridSystem.Core
             return Vector3.zero;
         }
 
-        public Building GetBuiltObjectInGrid(Vector3 position)
+        public Building GetBuildingAtGrid(Vector3 position)
         {
-            int index = GetGridIndexFromPosition(position);
+            int index = GetGridIndex(position);
 
             if (IsIndexOccupied(index))
             {

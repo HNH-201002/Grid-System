@@ -11,9 +11,7 @@ namespace GridSystem.UIManager
     {
         [SerializeField]
         private BuildingPrefabData buildingPrefabData;
-
         private Button btn_previewToggle;
-
         private Camera mainCamera;
         private PreviewController previewController;
 

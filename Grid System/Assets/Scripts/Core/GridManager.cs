@@ -35,7 +35,7 @@ namespace GridSystem.Core
 
         [Tooltip("Initial spawn position of the building")]
         [SerializeField]
-        private Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
+        private readonly Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
 
         public static GridManager Instance { get; private set; }
 
@@ -47,9 +47,9 @@ namespace GridSystem.Core
         public Vector3 MinScaled { get; private set; }
         public Vector3 MaxScaled { get; private set; }
 
-        private BuildingManager buildingManager;
+        private IBuildingManager buildingManager;
 
-        private GridBehavior gridBehavior;
+        private IGridBehavior gridBehavior;
 
         private InputHandler inputHandler;
 
@@ -71,62 +71,34 @@ namespace GridSystem.Core
             if (Instance == null)
             {
                 Instance = this;
-
-                GridCalculator calculator = gameObject.AddComponent<GridCalculator>();
-                calculator.Initialize(meshFilter, cellPerUnit);
-                var (gridSizeX, gridSizeZ, minScaled, maxScaled, gridWidth) = calculator.CalculateGridSize(transform.lossyScale);
-
-                GridSizeX = gridSizeX;
-                GridSizeZ = gridSizeZ;
-                MinScaled = minScaled;
-                MaxScaled = maxScaled;
-                GridWidth = gridWidth;
+                InitializeGrid();
             }
             else
             {
                 Destroy(gameObject);
             }
 
-            if (!TryGetComponent(out buildingManager))
-            {
-                buildingManager = gameObject.AddComponent<BuildingManager>();
-            }
-
-            if (!TryGetComponent(out gridBehavior))
-            {
-                gridBehavior = gameObject.AddComponent<GridBehavior>();
-            }
-
-            if (!TryGetComponent(out inputHandler))
-            {
-                inputHandler = gameObject.AddComponent<InputHandler>();
-            }
-
-            if (!TryGetComponent(out gridObjectSelector))
-            {
-                gridObjectSelector = gameObject.AddComponent<GridObjectSelector>();
-            }
-
-            if (!TryGetComponent(out buildingTypeManager))
-            {
-                buildingTypeManager = gameObject.AddComponent<BuildingSelectorManager>();
-            }
-
-
-            if (buildingManipulator == null)
-            {
-                buildingManipulator = new BuildingManipulator();
-            }
-
+            InitializeComponents();
             SetUp();
             RegisterEvents();
             SetGameState(GameState.None);
         }
 
+        private void InitializeComponents()
+        {
+            buildingManager = GetOrAddComponent<BuildingManager>();
+            gridBehavior = GetOrAddComponent<GridBehavior>();
+            inputHandler = GetOrAddComponent<InputHandler>();
+            gridObjectSelector = GetOrAddComponent<GridObjectSelector>();
+            buildingTypeManager = GetOrAddComponent<BuildingSelectorManager>();
+
+            buildingManipulator ??= new BuildingManipulator(this);
+        }
+
         private void SetUp()
         {
-            gridBehavior.Initialize(buildingManager);
-            gridObjectSelector.Initialize(buildingManager, gridBehavior, inputHandler, mainCamera);
+            gridBehavior.Initialize(this, buildingManager);
+            gridObjectSelector.Initialize(this, buildingManager, gridBehavior, inputHandler, mainCamera);
             buildingManager.Initialize(buildingDataList, gridBehavior);
         }
 
@@ -156,17 +128,17 @@ namespace GridSystem.Core
 
         public int GetGridIndexFromPosition(Vector3 position)
         {
-            return gridBehavior.GetGridIndexFromPosition(position);
+            return gridBehavior.GetGridIndex(position);
         }
 
         public void PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
-            gridBehavior.PlacePrefabOnGrid(position, rotation, buildingType, boxCollider);
+            gridBehavior.PlaceBuilding(position, rotation, buildingType, boxCollider);
         }
 
         public Vector3 GetGridPosition(int gridIndex)
         {
-            return gridBehavior.GetGridPosition(gridIndex);
+            return gridBehavior.GetGridWorldPosition(gridIndex);
         }
 
         public void RemoveBuilding(Building building)
@@ -216,14 +188,31 @@ namespace GridSystem.Core
 
         public PreviewController InitializePreviewController(BuildingPrefabData buildingPrefabData)
         {
-            var previewManager = new PreviewManager(buildingPrefabData.Prefab);
-            return new PreviewController(buildingPrefabData, previewManager, mainCamera, initialSpawnPoint);
+            var previewManager = new PreviewManager(this, buildingPrefabData.Prefab);
+            return new PreviewController(this, buildingPrefabData, previewManager, initialSpawnPoint);
+        }
+
+        private void InitializeGrid()
+        {
+            var calculator = gameObject.AddComponent<GridCalculator>();
+            calculator.Initialize(meshFilter, cellPerUnit);
+            (GridSizeX, GridSizeZ, MinScaled, MaxScaled, GridWidth) =
+                calculator.CalculateGridSize(transform.lossyScale);
+        }
+
+        private T GetOrAddComponent<T>() where T : Component
+        {
+            return GetComponent<T>() ?? gameObject.AddComponent<T>();
         }
 
         private void OnDestroy()
         {
-            gridObjectSelector.ObjectSelect -= OnObjectSelected;
-            buildingManipulator.BuildingCompleted -= OnBuildingCompleted;
+            if (gridObjectSelector != null)
+                gridObjectSelector.ObjectSelect -= OnObjectSelected;
+
+            if (buildingManipulator != null)
+                buildingManipulator.BuildingCompleted -= OnBuildingCompleted;
         }
+
     }
 }

@@ -8,9 +8,9 @@ namespace GridSystem.Core
 {
     public class GridObjectSelector : MonoBehaviour
     {
-        private BuildingManager buildingManager;
+        private IBuildingManager buildingManager;
 
-        private GridBehavior gridBehavior;
+        private IGridBehavior gridBehavior;
 
         private InputHandler inputHandler;
 
@@ -20,10 +20,13 @@ namespace GridSystem.Core
         private Building currentBuiltObject;
         private FootprintGenerator footprintGenerator;
 
+        private GridManager gridManager;
+
         public event Action<Building> ObjectSelect;
 
-        public void Initialize(BuildingManager buildingManager, GridBehavior gridBehavior, InputHandler inputHandler, Camera mainCamera)
+        public void Initialize(GridManager gridManager, IBuildingManager buildingManager, IGridBehavior gridBehavior, InputHandler inputHandler, Camera mainCamera)
         {
+            this.gridManager = gridManager;
             this.buildingManager = buildingManager;
             this.gridBehavior = gridBehavior;
             this.inputHandler = inputHandler;
@@ -48,14 +51,14 @@ namespace GridSystem.Core
 
         private void HandleGridObjectSelection()
         {
-            if (GridManager.Instance.CurrentGameState == GameState.Building) return;
+            if (gridManager.CurrentGameState == GameState.Building) return;
 
             if (IsPointerOverUI()) return;
 
             Vector3? position = raycastHandler.RaycastNow(mainCamera, inputHandler.GetInputPosition());
             if (!position.HasValue) return;
 
-            Building selectedObject = gridBehavior.GetBuiltObjectInGrid(position.Value);
+            Building selectedObject = gridBehavior.GetBuildingAtGrid(position.Value);
 
             UpdateSelectedObject(selectedObject);
         }

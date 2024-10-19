@@ -22,24 +22,27 @@ namespace GridSystem.UIManager
         [SerializeField]
         private Button btn_accept;
 
+        [SerializeField]
+        private GridManager gridManager;
+
         private void Start()
         {
             RegisterUIEvents();
-            GridManager.Instance.ObjectSelected += OnObjectSelected;
+            gridManager.ObjectSelected += OnObjectSelected;
         }
 
         private void OnDestroy()
         {
             UnregisterUIEvents();
-            GridManager.Instance.ObjectSelected -= OnObjectSelected;
+            gridManager.ObjectSelected -= OnObjectSelected;
         }
 
         private void RegisterUIEvents()
         {
-            btn_Delete.onClick.AddListener(() => GridManager.Instance.DeleteBuilding());
-            btn_leftRotate.onClick.AddListener(() => GridManager.Instance.RotateLeftBuilding());
-            btn_rightRotate.onClick.AddListener(() => GridManager.Instance.RotateRightBuilding());
-            btn_accept.onClick.AddListener(() => GridManager.Instance.AcceptPlacement());
+            btn_Delete.onClick.AddListener(() => gridManager.DeleteBuilding());
+            btn_leftRotate.onClick.AddListener(() => gridManager.RotateLeftBuilding());
+            btn_rightRotate.onClick.AddListener(() => gridManager.RotateRightBuilding());
+            btn_accept.onClick.AddListener(() => gridManager.AcceptPlacement());
         }
 
         private void UnregisterUIEvents()
@@ -52,12 +55,12 @@ namespace GridSystem.UIManager
 
         private void OnObjectSelected(Building building)
         {
-            GridManager.Instance.SetBuildingInstance(building);
+            gridManager.SetBuildingInstance(building);
         }
 
         public void SetPlacementPreviewInstance(PlacementPreview placementPreview)
         {
-            GridManager.Instance.SetPlacementPreviewInstance(placementPreview);
+            gridManager.SetPlacementPreviewInstance(placementPreview);
         }
     }
 }

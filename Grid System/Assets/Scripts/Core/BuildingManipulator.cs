@@ -12,6 +12,13 @@ namespace GridSystem.Core
 
         public event Action BuildingCompleted;
 
+        private GridManager gridManager;
+
+        public BuildingManipulator(GridManager gridManager)
+        {
+            this.gridManager = gridManager;
+        }
+
         public void SetBuilding(Building building)
         {
             this.building = building;
@@ -49,7 +56,7 @@ namespace GridSystem.Core
         {
             if (building != null)
             {
-                GridManager.Instance.RemoveBuilding(building);
+                gridManager.RemoveBuilding(building);
                 building = null;
             }
         }
