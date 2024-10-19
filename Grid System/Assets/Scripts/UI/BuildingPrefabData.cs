@@ -1,4 +1,5 @@
 using UnityEngine;
+using GridSystem.Core.Enum;
 
 namespace GridSystem.Data
 {

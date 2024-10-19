@@ -1,8 +1,14 @@
-public enum BuildingType
+namespace GridSystem.Core.Enum
 {
-    House,
-    Tower,
-    Factory,
-    Hospital,
-    School
+    /// <summary>
+    /// Defines the different types of buildings that can be constructed in the grid system.
+    /// </summary>
+    public enum BuildingType
+    {
+        House,
+        Tower,
+        Factory,
+        Hospital,
+        School
+    }
 }

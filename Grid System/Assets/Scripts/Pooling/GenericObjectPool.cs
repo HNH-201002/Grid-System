@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace GridSystem.Pooling
 {
+    /// <summary>
+    /// A generic object pool for reusing MonoBehaviour objects.
+    /// Helps reduce overhead by reusing objects instead of creating and destroying them repeatedly.
+    /// </summary>
+    /// <typeparam name="T">The type of object to pool, must inherit from <see cref="MonoBehaviour"/>.</typeparam>
     public class GenericObjectPool<T> where T : MonoBehaviour
     {
         private Queue<T> objectPool;
@@ -23,6 +28,10 @@ namespace GridSystem.Pooling
             }
         }
 
+        /// <summary>
+        /// Retrieves an object from the pool, instantiating a new one if the pool is empty.
+        /// </summary>
+        /// <returns>An active object from the pool.</returns>
         public T GetFromPool()
         {
             if (objectPool.Count == 0)
@@ -35,6 +44,10 @@ namespace GridSystem.Pooling
             return obj;
         }
 
+        /// <summary>
+        /// Returns an object back to the pool and deactivates it.
+        /// </summary>
+        /// <param name="obj">The object to return to the pool.</param>
         public void ReturnToPool(T obj)
         {
             obj.gameObject.SetActive(false);

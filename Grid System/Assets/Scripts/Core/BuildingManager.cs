@@ -1,12 +1,16 @@
-
 using System;
 using System.Collections.Generic;
 using GridSystem.Data;
 using GridSystem.Pooling;
 using UnityEngine;
+using GridSystem.Core.Enum;
 
 namespace GridSystem.Core
 {
+    /// <summary>
+    /// Manages the lifecycle of buildings within the grid system.
+    /// Responsible for building, rotating, removing buildings, and managing object pools.
+    /// </summary>
     public class BuildingManager : MonoBehaviour, IBuildingManager
     {
         private List<BuildingPrefabData> buildingDataList;
@@ -15,6 +19,7 @@ namespace GridSystem.Core
 
         private IGridBehavior gridBehavior;
 
+        /// <inheritdoc/>
         public event Action<Building> BuildingRemoved;
 
         public void Initialize(List<BuildingPrefabData> buildingDataList, IGridBehavior gridBehavior)
@@ -34,6 +39,7 @@ namespace GridSystem.Core
             }
         }
 
+        /// <inheritdoc/>
         public void Remove(Building building)
         {
             BuildingRemoved?.Invoke(building);
@@ -42,12 +48,14 @@ namespace GridSystem.Core
             poolDictionary[building.BuildingPrefabData.BuildingType].ReturnToPool(building);
         }
 
+        /// <inheritdoc/>
         public Building Build(BuildingType buildingType)
         {
             var building = poolDictionary[buildingType].GetFromPool();
             return building;
         }
 
+        /// <inheritdoc/>
         public void Rotate(Building building, int angle)
         {
             building.transform.rotation = Quaternion.Euler(0, building.transform.rotation.eulerAngles.y + angle, 0);

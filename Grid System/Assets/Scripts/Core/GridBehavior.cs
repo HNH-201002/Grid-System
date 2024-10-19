@@ -1,8 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using GridSystem.Core.Enum;
 
 namespace GridSystem.Core
 {
+    /// <summary>
+    /// Manages the behavior of the grid, including grid generation, placement of buildings,
+    /// and tracking of occupied grid cells. 
+    /// </summary>
     public class GridBehavior : MonoBehaviour, IGridBehavior
     {
         private IBuildingManager buildingManager;
@@ -10,12 +15,14 @@ namespace GridSystem.Core
         private HashSet<int> occupiedIndexes = new HashSet<int>();
         private GridManager gridManager;
 
+        /// <inheritdoc/>        
         public void Initialize(GridManager gridManager, IBuildingManager buildingManager)
         {
             this.buildingManager = buildingManager;
             this.gridManager = gridManager;
         }
 
+        /// <inheritdoc/>        
         public void GenerateGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
         {
             float xLimit = maxScaled.x - gridSizeX / 2;
@@ -34,6 +41,7 @@ namespace GridSystem.Core
             }
         }
 
+        /// <inheritdoc/>
         public void PlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
             Bounds bounds = boxCollider.bounds;
@@ -74,11 +82,13 @@ namespace GridSystem.Core
             return false;
         }
 
+        /// <inheritdoc/>
         public bool IsIndexOccupied(int index)
         {
             return occupiedIndexes.Contains(index);
         }
 
+        /// <inheritdoc/>
         public void SetGridOccupied(List<int> indexes, bool isOccupied, Building build = null)
         {
             foreach (int index in indexes)
@@ -131,7 +141,7 @@ namespace GridSystem.Core
             return (xCount, zCount, indexes);
         }
 
-
+        /// <inheritdoc/>
         public int GetGridIndex(Vector3 position)
         {
             int xIndex = Mathf.FloorToInt((position.x - gridManager.MinScaled.x) / gridManager.GridSizeX);
@@ -148,6 +158,7 @@ namespace GridSystem.Core
             return gridIndex;
         }
 
+        /// <inheritdoc/>
         public Vector3 GetGridWorldPosition(int gridIndex)
         {
             if (gridIndex >= 0 && gridIndex < grids.Count)
@@ -158,6 +169,7 @@ namespace GridSystem.Core
             return grids[GetGridIndex(Vector3.zero)].Position;
         }
 
+        /// <inheritdoc/>
         public Building GetBuildingAtGrid(Vector3 position)
         {
             int index = GetGridIndex(position);

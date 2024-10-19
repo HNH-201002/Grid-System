@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace GridSystem.Core
 {
+    /// <summary>
+    /// It computes the dimensions based on the mesh filter, scale, and the number of cells per unit.
+    /// </summary>
     public class GridCalculator : MonoBehaviour
     {
         private MeshFilter meshFilter;
@@ -13,6 +16,18 @@ namespace GridSystem.Core
             this.cellPerUnit = cellPerUnit;
         }
 
+        /// <summary>
+        /// Calculates the grid size, scaled boundaries, and grid width based on the mesh and scale.
+        /// </summary>
+        /// <param name="scale">The scale of the grid system.</param>
+        /// <returns>
+        /// A tuple containing:
+        /// - gridSizeX: The width of each grid cell along the X-axis.
+        /// - gridSizeZ: The depth of each grid cell along the Z-axis.
+        /// - minScaled: The minimum scaled boundary of the grid.
+        /// - maxScaled: The maximum scaled boundary of the grid.
+        /// - gridWidth: The total width of the grid in terms of cells.
+        /// </returns>
         public (float gridSizeX, float gridSizeZ, Vector3 minScaled, Vector3 maxScaled, int gridWidth) CalculateGridSize(Vector3 scale)
         {
             Bounds bounds = meshFilter.sharedMesh.bounds;

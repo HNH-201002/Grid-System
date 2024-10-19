@@ -2,10 +2,12 @@ using GridSystem.Data;
 using UnityEngine;
 using UnityEngine.UI;
 using GridSystem.Core;
-using GridSystem.Utilities;
 
 namespace GridSystem.UIManager
 {
+    /// <summary>
+    /// Handles the functionality of a UI button to toggle the building placement preview.
+    /// </summary>
     [RequireComponent(typeof(Button))]
     public class ButtonBuildingPreview : MonoBehaviour
     {

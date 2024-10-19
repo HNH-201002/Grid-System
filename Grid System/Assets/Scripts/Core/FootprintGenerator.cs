@@ -2,11 +2,20 @@ using UnityEngine;
 
 namespace GridSystem.Core
 {
+    /// <summary>
+    /// Generates a footprint GameObject used to indicate the building placement selected.
+    /// Creates a mesh with a green material for visual feedback during building placement.
+    /// </summary>
     public class FootprintGenerator
     {
         private const float footprintSize = 1;
         private static Material footprintMaterial;
 
+        /// <summary>
+        /// Generates a new footprint GameObject with a mesh and material.
+        /// The footprint is initially inactive and positioned at the origin.
+        /// </summary>
+        /// <returns>A GameObject representing the building footprint.</returns>
         public GameObject Generate()
         {
             GameObject footprintObj = new GameObject("BuildingFootprint");

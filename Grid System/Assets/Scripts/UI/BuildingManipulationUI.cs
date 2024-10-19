@@ -58,6 +58,10 @@ namespace GridSystem.UIManager
             gridManager.SetBuildingInstance(building);
         }
 
+        /// <summary>
+        /// Sets the placement preview instance in the GridManager.
+        /// </summary>
+        /// <param name="placementPreview">The <see cref="PlacementPreview"/> to be set.</param>
         public void SetPlacementPreviewInstance(PlacementPreview placementPreview)
         {
             gridManager.SetPlacementPreviewInstance(placementPreview);

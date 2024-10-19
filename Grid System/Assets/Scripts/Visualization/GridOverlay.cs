@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace GridSystem.Visualization
 {
+    /// <summary>
+    /// Visualizes a grid overlay in the Unity editor using Gizmos.
+    /// The grid adapts based on the object's scale and mesh bounds, allowing for customized cell sizes.
+    /// </summary>
     public class GridOverlay : MonoBehaviour
     {
         [SerializeField]
@@ -75,6 +79,9 @@ namespace GridSystem.Visualization
             Gizmos.DrawLine(new Vector3(minScaled.x, 0, maxScaled.z), new Vector3(maxScaled.x, 0, maxScaled.z));
         }
 
+        /// <summary>
+        /// Multiplies two vectors element-wise.
+        /// </summary>
         public Vector3 Multiply(Vector3 a, Vector3 b)
         {
             return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);

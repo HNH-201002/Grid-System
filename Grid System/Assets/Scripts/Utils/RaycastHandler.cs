@@ -2,6 +2,10 @@ using UnityEngine;
 
 namespace GridSystem.Utilities
 {
+    /// <summary>
+    /// Handles raycasting operations with optional mouse movement tracking.
+    /// Provides methods to perform conditional or immediate raycasts.
+    /// </summary>
     public class RaycastHandler
     {
         private Vector3 lastMousePosition = Vector3.positiveInfinity;

@@ -4,14 +4,19 @@ using System;
 
 namespace GridSystem.Core
 {
+    /// <summary>
+    ///  Handles interactions between the grid system and building objects.
+    /// </summary>
     public class BuildingManipulator
     {
+        /// <summary>
+        /// Event triggered when a building placement is completed.
+        /// </summary>
+        public event Action BuildingCompleted;
+
         private Building building;
         private PlacementPreview placementPreview;
         private int currentRotationAngle;
-
-        public event Action BuildingCompleted;
-
         private GridManager gridManager;
 
         public BuildingManipulator(GridManager gridManager)
@@ -19,21 +24,35 @@ namespace GridSystem.Core
             this.gridManager = gridManager;
         }
 
+        /// <summary>
+        /// Sets the building object to be manipulated.
+        /// </summary>
+        /// <param name="building">The building object to manipulate.</param>
         public void SetBuilding(Building building)
         {
             this.building = building;
         }
 
+        /// <summary>
+        /// Sets the placement preview object for the building.
+        /// </summary>
+        /// <param name="preview">The placement preview object.</param>
         public void SetPlacementPreview(PlacementPreview preview)
         {
             placementPreview = preview;
         }
 
+        /// <summary>
+        /// Rotates the building or preview 90 degrees to the left.
+        /// </summary>
         public void RotateLeft()
         {
             RotateBuilding(-90);
         }
 
+        /// <summary>
+        /// Rotates the building or preview 90 degrees to the right.
+        /// </summary>
         public void RotateRight()
         {
             RotateBuilding(90);
@@ -52,6 +71,9 @@ namespace GridSystem.Core
             }
         }
 
+        /// <summary>
+        /// Deletes the currently selected building from the grid.
+        /// </summary>
         public void DeleteBuilding()
         {
             if (building != null)
@@ -61,6 +83,9 @@ namespace GridSystem.Core
             }
         }
 
+        /// <summary>
+        /// Accepts the placement of the previewed building, finalizing its position on the grid.
+        /// </summary>
         public void AcceptPlacement()
         {
             if (placementPreview == null)

@@ -1,10 +1,10 @@
 using UnityEngine;
 using GridSystem.InputManagement;
-using System.Collections.Generic;
 using GridSystem.Data;
 using System;
 using GridSystem.UIManager;
 using GridSystem.Visualization;
+using GridSystem.Core.Enum;
 
 namespace GridSystem.Core
 {
@@ -31,7 +31,7 @@ namespace GridSystem.Core
         public Vector3 MinScaled { get; private set; }
         public Vector3 MaxScaled { get; private set; }
 
-        public GameState CurrentGameState { get; private set; }
+        public GridState CurrentGameState { get; private set; }
 
 
         private IBuildingManager buildingManager;
@@ -68,7 +68,7 @@ namespace GridSystem.Core
             InitializeComponents();
             SetUp();
             RegisterEvents();
-            SetGameState(GameState.None);
+            SetGameState(GridState.None);
             gridBehavior.GenerateGrid(MinScaled, MaxScaled, GridSizeX, GridSizeZ);
         }
 
@@ -134,7 +134,7 @@ namespace GridSystem.Core
             buildingManager.Remove(building);
         }
 
-        public void SetGameState(GameState newGameState)
+        public void SetGameState(GridState newGameState)
         {
             CurrentGameState = newGameState;
         }

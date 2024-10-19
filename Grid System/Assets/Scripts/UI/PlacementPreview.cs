@@ -4,6 +4,7 @@ using GridSystem.Tags;
 using GridSystem.InputManagement;
 using GridSystem.Core.PhysicsCollider;
 using GridSystem.Utilities;
+using GridSystem.Core.Enum;
 
 namespace GridSystem.Visualization
 {
