@@ -13,11 +13,14 @@ namespace GridSystem.Core
         private GameObject previewInstance;
         private PlacementPreview previewComponent;
         private GridManager gridManager;
+        private IGridBehavior gridBehavior;
+        private bool isBuildable = true;
 
-        public PreviewManager(GridManager gridManager, GameObject prefab)
+        public PreviewManager(GridManager gridManager, IGridBehavior gridBehavior, GameObject prefab)
         {
             previewPool = new ObjectPool<GameObject>(prefab, 1);
             this.gridManager = gridManager;
+            this.gridBehavior = gridBehavior;
         }
 
         public GameObject ActivatePreview(Vector3 position)
@@ -28,6 +31,7 @@ namespace GridSystem.Core
             }
 
             previewInstance.transform.position = position;
+            isBuildable = !gridBehavior.IsIndexOccupied(gridBehavior.GetGridIndex(position));
             gridManager.SetGameState(GameState.Building);
             return previewInstance;
         }
@@ -50,7 +54,8 @@ namespace GridSystem.Core
                                previewInstance.AddComponent<PlacementPreview>();
 
             previewComponent.Initialize(gridManager, this, data.BuildingType);
-            previewComponent.ResetPreview();
+            previewComponent.ClearPreviewState();
+            previewComponent.ApplyMaterialToPreview(previewComponent.GetTargetMaterial(isBuildable));
             this.previewController = previewController;
             gridManager.SetPlacementPreviewInstance(previewComponent);
         }

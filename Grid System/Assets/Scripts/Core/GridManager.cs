@@ -35,7 +35,7 @@ namespace GridSystem.Core
 
         [Tooltip("Initial spawn position of the building")]
         [SerializeField]
-        private readonly Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
+        private Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
 
         public static GridManager Instance { get; private set; }
 
@@ -46,6 +46,9 @@ namespace GridSystem.Core
 
         public Vector3 MinScaled { get; private set; }
         public Vector3 MaxScaled { get; private set; }
+
+        public GameState CurrentGameState { get; private set; }
+
 
         private IBuildingManager buildingManager;
 
@@ -63,9 +66,6 @@ namespace GridSystem.Core
 
         public event Action BuildCompleted;
 
-        public GameState CurrentGameState { get; private set; }
-
-
         private void Awake()
         {
             if (Instance == null)
@@ -82,6 +82,7 @@ namespace GridSystem.Core
             SetUp();
             RegisterEvents();
             SetGameState(GameState.None);
+            gridBehavior.GenerateGrid(MinScaled, MaxScaled, GridSizeX, GridSizeZ);
         }
 
         private void InitializeComponents()
@@ -188,7 +189,8 @@ namespace GridSystem.Core
 
         public PreviewController InitializePreviewController(BuildingPrefabData buildingPrefabData)
         {
-            var previewManager = new PreviewManager(this, buildingPrefabData.Prefab);
+            initialSpawnPoint = gridBehavior.GetGridWorldPosition(gridBehavior.GetGridIndex(initialSpawnPoint));
+            var previewManager = new PreviewManager(this, gridBehavior, buildingPrefabData.Prefab);
             return new PreviewController(this, buildingPrefabData, previewManager, initialSpawnPoint);
         }
 
@@ -213,6 +215,5 @@ namespace GridSystem.Core
             if (buildingManipulator != null)
                 buildingManipulator.BuildingCompleted -= OnBuildingCompleted;
         }
-
     }
 }

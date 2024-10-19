@@ -7,6 +7,7 @@ namespace GridSystem.Core
     public interface IGridBehavior
     {
         public void Initialize(GridManager gridManager, IBuildingManager buildingManager);
+        public void GenerateGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ);
         public void PlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider);
         public int GetGridIndex(Vector3 position);
         public Vector3 GetGridWorldPosition(int gridIndex);

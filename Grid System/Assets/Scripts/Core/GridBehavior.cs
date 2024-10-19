@@ -17,12 +17,7 @@ namespace GridSystem.Core
             this.gridManager = gridManager;
         }
 
-        private void Start()
-        {
-            StartCoroutine(GenerateGrid(gridManager.MinScaled, gridManager.MaxScaled, gridManager.GridSizeX, gridManager.GridSizeZ));
-        }
-
-        private IEnumerator GenerateGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
+        public void GenerateGrid(Vector3 minScaled, Vector3 maxScaled, float gridSizeX, float gridSizeZ)
         {
             float xLimit = maxScaled.x - gridSizeX / 2;
             float zLimit = maxScaled.z - gridSizeZ / 2;
@@ -36,8 +31,6 @@ namespace GridSystem.Core
                 {
                     Vector3 position = new Vector3(x + centerOffsetX, 0.01f, z + centerOffsetZ);
                     grids.Add(new Grid(position));
-                    if (Time.frameCount % 20 == 0)
-                        yield return null;
                 }
             }
         }
@@ -163,8 +156,7 @@ namespace GridSystem.Core
                 return grids[gridIndex].Position;
             }
 
-            Debug.LogWarning("Grid index out of range: " + gridIndex);
-            return Vector3.zero;
+            return grids[GetGridIndex(Vector3.zero)].Position;
         }
 
         public Building GetBuildingAtGrid(Vector3 position)

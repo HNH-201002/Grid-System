@@ -1,7 +1,6 @@
 using UnityEngine;
 using GridSystem.Data;
 using GridSystem.Core;
-using GridSystem.Utilities;
 
 namespace GridSystem.UIManager
 {

@@ -46,22 +46,27 @@ namespace GridSystem.Visualization
                 Debug.LogError("BoxCollider not assigned to placement preview. Please attach BoxCollider!");
             }
 
+            InitializeHandlers();
+        }
+
+        private void InitializeHandlers()
+        {
             meshRenderer = GetComponent<MeshRenderer>();
             inputHandler = gameObject.AddComponent<InputHandler>();
             collisionHandler = gameObject.AddComponent<CollisionHandler>();
             previousMousePosition = inputHandler.GetInputPosition();
             collisionHandler.Initialize(GameTags.ConstructedObject);
-            UpdatePreviewPosition(currentCellIndex, collisionHandler.IsBuildable);
+            UpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
             originalRotation = gameObject.transform.rotation;
-            inputHandler.OnInputHold += UpdatePreviewPosition;
+            inputHandler.OnInputHold += CheckInputMovement;
         }
 
         private void OnDestroy()
         {
-            inputHandler.OnInputHold -= UpdatePreviewPosition;
+            inputHandler.OnInputHold -= CheckInputMovement;
         }
 
-        private void UpdatePreviewPosition()
+        private void CheckInputMovement()
         {
             if (inputHandler.HasInputMoved(previousMousePosition))
             {
@@ -69,7 +74,7 @@ namespace GridSystem.Visualization
                 previousMousePosition = inputHandler.GetInputPosition();
             }
 
-            UpdatePreviewPosition(currentCellIndex, collisionHandler.IsBuildable);
+            UpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
         }
 
         private void RaycastAndUpdateCellIndex()
@@ -85,7 +90,7 @@ namespace GridSystem.Visualization
             }
         }
 
-        public bool Build()
+        public bool PlaceBuildingFromPreview()
         {
             if (!collisionHandler.IsBuildable)
                 return false;
@@ -93,7 +98,7 @@ namespace GridSystem.Visualization
             Vector3 position = gameObject.transform.position;
             Quaternion rotation = gameObject.transform.rotation;
             gridManager.PlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
-            SetMeshMaterial(gridManager.UnBuildableMaterial);
+            ApplyMaterialToPreview(gridManager.UnBuildableMaterial);
             gameObject.SetActive(false);
 
             previewManager.HidePreview();
@@ -105,10 +110,10 @@ namespace GridSystem.Visualization
             transform.rotation = originalRotation;
         }
 
-        private void UpdatePreviewPosition(int currentCellIndex, bool isBuildable)
+        private void UpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
         {
             Material targetMaterial = isBuildable ? gridManager.BuildableMaterial : gridManager.UnBuildableMaterial;
-            SetMeshMaterial(targetMaterial);
+            ApplyMaterialToPreview(targetMaterial);
 
             if (currentCellIndex != previousCellIndex && currentCellIndex != -1)
             {
@@ -118,7 +123,12 @@ namespace GridSystem.Visualization
             }
         }
 
-        private void SetMeshMaterial(Material material)
+        public Material GetTargetMaterial(bool isBuildable)
+        {
+            return isBuildable ? gridManager.BuildableMaterial : gridManager.UnBuildableMaterial;
+        }
+
+        public void ApplyMaterialToPreview(Material material)
         {
             if (meshRenderer != null && meshRenderer.material != material)
             {
@@ -126,12 +136,12 @@ namespace GridSystem.Visualization
             }
         }
 
-        public void ResetPreview()
+        public void ClearPreviewState()
         {
             previousCellIndex = -1;
             currentCellIndex = -1;
 
-            SetMeshMaterial(gridManager.BuildableMaterial);
+            ApplyMaterialToPreview(gridManager.BuildableMaterial);
         }
     }
 }

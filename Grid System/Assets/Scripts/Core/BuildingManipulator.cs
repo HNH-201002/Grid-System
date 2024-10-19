@@ -72,7 +72,7 @@ namespace GridSystem.Core
                 return;
             }
 
-            if (placementPreview.Build())
+            if (placementPreview.PlaceBuildingFromPreview())
             {
                 CleanupPlacement();
                 BuildingCompleted?.Invoke();
