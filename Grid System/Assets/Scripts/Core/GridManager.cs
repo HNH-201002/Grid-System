@@ -11,31 +11,15 @@ namespace GridSystem.Core
     public class GridManager : MonoBehaviour
     {
         [SerializeField]
+        private GridSettings gridSettings;
+
+        public GridSettings GridSettings => gridSettings;
+
+        [SerializeField]
         private MeshFilter meshFilter;
-
-        [Tooltip("How many cells within 1 unit")]
-        [SerializeField]
-        private int cellPerUnit = 1;
-
-        [SerializeField]
-        private Material buildableMaterial;
-
-        public Material BuildableMaterial => buildableMaterial;
-
-        [SerializeField]
-        private Material unbuildableMaterial;
-
-        public Material UnBuildableMaterial => unbuildableMaterial;
-
-        [SerializeField]
-        private List<BuildingPrefabData> buildingDataList;
-
-        [SerializeField]
         private Camera mainCamera;
 
-        [Tooltip("Initial spawn position of the building")]
-        [SerializeField]
-        private Vector3 initialSpawnPoint = new Vector3(0, 0.5f, 0);
+        private Vector3 initialSpawnPoint;
 
         public static GridManager Instance { get; private set; }
 
@@ -68,6 +52,9 @@ namespace GridSystem.Core
 
         private void Awake()
         {
+            gameObject.transform.localScale = new Vector3(gridSettings.GridSizeX, 0.1f, gridSettings.GridSizeZ);
+            mainCamera = Camera.main;
+
             if (Instance == null)
             {
                 Instance = this;
@@ -100,7 +87,7 @@ namespace GridSystem.Core
         {
             gridBehavior.Initialize(this, buildingManager);
             gridObjectSelector.Initialize(this, buildingManager, gridBehavior, inputHandler, mainCamera);
-            buildingManager.Initialize(buildingDataList, gridBehavior);
+            buildingManager.Initialize(gridSettings.BuildingDataList, gridBehavior);
         }
 
         private void RegisterEvents()
@@ -189,7 +176,7 @@ namespace GridSystem.Core
 
         public PreviewController InitializePreviewController(BuildingPrefabData buildingPrefabData)
         {
-            initialSpawnPoint = gridBehavior.GetGridWorldPosition(gridBehavior.GetGridIndex(initialSpawnPoint));
+            initialSpawnPoint = gridBehavior.GetGridWorldPosition(gridBehavior.GetGridIndex(gridSettings.InitialSpawnPoint));
             var previewManager = new PreviewManager(this, gridBehavior, buildingPrefabData.Prefab);
             return new PreviewController(this, buildingPrefabData, previewManager, initialSpawnPoint);
         }
@@ -197,7 +184,7 @@ namespace GridSystem.Core
         private void InitializeGrid()
         {
             var calculator = gameObject.AddComponent<GridCalculator>();
-            calculator.Initialize(meshFilter, cellPerUnit);
+            calculator.Initialize(meshFilter, gridSettings.CellPerUnit);
             (GridSizeX, GridSizeZ, MinScaled, MaxScaled, GridWidth) =
                 calculator.CalculateGridSize(transform.lossyScale);
         }

@@ -7,6 +7,9 @@ using GridSystem.Utilities;
 
 namespace GridSystem.Visualization
 {
+    /// <summary>
+    /// Updates the appearance of the preview based on whether the area is buildable or not.
+    /// </summary>
     public class PlacementPreview : MonoBehaviour
     {
         private MeshRenderer meshRenderer;
@@ -90,6 +93,10 @@ namespace GridSystem.Visualization
             }
         }
 
+        /// <summary>
+        /// Places the building on the grid if the area is buildable.
+        /// </summary>
+        /// <returns>True if the building was placed successfully, false otherwise.</returns>
         public bool PlaceBuildingFromPreview()
         {
             if (!collisionHandler.IsBuildable)
@@ -98,7 +105,7 @@ namespace GridSystem.Visualization
             Vector3 position = gameObject.transform.position;
             Quaternion rotation = gameObject.transform.rotation;
             gridManager.PlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
-            ApplyMaterialToPreview(gridManager.UnBuildableMaterial);
+            ApplyMaterialToPreview(gridManager.GridSettings.UnbuildableMaterial);
             gameObject.SetActive(false);
 
             previewManager.HidePreview();
@@ -112,7 +119,7 @@ namespace GridSystem.Visualization
 
         private void UpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
         {
-            Material targetMaterial = isBuildable ? gridManager.BuildableMaterial : gridManager.UnBuildableMaterial;
+            Material targetMaterial = GetTargetMaterial(isBuildable);
             ApplyMaterialToPreview(targetMaterial);
 
             if (currentCellIndex != previousCellIndex && currentCellIndex != -1)
@@ -123,11 +130,20 @@ namespace GridSystem.Visualization
             }
         }
 
+        /// <summary>
+        /// Gets the appropriate material based on whether the area is buildable.
+        /// </summary>
+        /// <param name="isBuildable">Whether the current area is buildable.</param>
+        /// <returns>The material to apply to the preview object.</returns>
         public Material GetTargetMaterial(bool isBuildable)
         {
-            return isBuildable ? gridManager.BuildableMaterial : gridManager.UnBuildableMaterial;
+            return isBuildable ? gridManager.GridSettings.BuildableMaterial : gridManager.GridSettings.UnbuildableMaterial;
         }
 
+        /// <summary>
+        /// Applies the given material to the preview object.
+        /// </summary>
+        /// <param name="material">The material to apply.</param>
         public void ApplyMaterialToPreview(Material material)
         {
             if (meshRenderer != null && meshRenderer.material != material)
@@ -136,12 +152,15 @@ namespace GridSystem.Visualization
             }
         }
 
+        /// <summary>
+        /// Clears the state of the preview, resetting cell indices and applying the buildable material.
+        /// </summary>
         public void ClearPreviewState()
         {
             previousCellIndex = -1;
             currentCellIndex = -1;
 
-            ApplyMaterialToPreview(gridManager.BuildableMaterial);
+            ApplyMaterialToPreview(gridManager.GridSettings.BuildableMaterial);
         }
     }
 }
