@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11e1b64fd649f3d4880d4a341e6b6e3e, type: 3}
   m_Name: Default
   m_EditorClassIdentifier: 
-  CellPerUnit: 1
-  GridSizeX: 10
-  GridSizeZ: 10
-  GridWidth: 10
-  BuildableMaterial: {fileID: 0}
-  UnbuildableMaterial: {fileID: 0}
+  CellPerUnit: 5
+  GridSizeX: 1
+  GridSizeZ: 1
+  BuildableMaterial: {fileID: 2100000, guid: 93382faf3bfdc8a46a2880ca2bae3723, type: 2}
+  UnbuildableMaterial: {fileID: 2100000, guid: 5baa92955043ec843bc5fb5db5041e5a, type: 2}
   InitialSpawnPoint: {x: 0, y: 0.5, z: 0}
-  BuildingDataList: []
+  BuildingDataList:
+  - {fileID: 11400000, guid: bbe3a4c963927c44e90613dde50df63d, type: 2}
+  - {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}

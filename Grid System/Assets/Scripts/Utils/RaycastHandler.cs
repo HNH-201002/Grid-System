@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace GridSystem.Utilities
 {
@@ -17,7 +18,7 @@ namespace GridSystem.Utilities
         /// </summary>
         public Vector3? RaycastIfMoved(Camera camera, Vector3 mousePosition, LayerMask? targetLayer = null)
         {
-            if (camera == null) return null;
+            if (camera == null || IsPointerOverUI(mousePosition)) return null;
 
             if ((lastMousePosition - mousePosition).sqrMagnitude < epsilon * epsilon)
             {
@@ -33,7 +34,7 @@ namespace GridSystem.Utilities
         /// </summary>
         public Vector3? RaycastNow(Camera camera, Vector3 mousePosition, LayerMask? targetLayer = null)
         {
-            if (camera == null) return null;
+            if (camera == null || IsPointerOverUI(mousePosition)) return null;
 
             return DoRaycast(camera, mousePosition, targetLayer);
         }
@@ -51,6 +52,14 @@ namespace GridSystem.Utilities
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Checks if the pointer is currently over any UI element.
+        /// </summary>
+        private bool IsPointerOverUI(Vector3 mousePosition)
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
     }
 }

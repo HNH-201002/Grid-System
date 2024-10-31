@@ -40,7 +40,6 @@ namespace GridSystem.Visualization
         private void Start()
         {
             mainCamera = Camera.main;
-
             if (gameObject.TryGetComponent(out BoxCollider boxCollider))
             {
                 this.boxCollider = boxCollider;
@@ -60,7 +59,7 @@ namespace GridSystem.Visualization
             collisionHandler = gameObject.AddComponent<CollisionHandler>();
             previousMousePosition = inputHandler.GetInputPosition();
             collisionHandler.Initialize(GameTags.ConstructedObject);
-            UpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
+            InitializationUpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
             originalRotation = gameObject.transform.rotation;
             inputHandler.OnInputHold += CheckInputMovement;
         }
@@ -105,8 +104,12 @@ namespace GridSystem.Visualization
 
             Vector3 position = gameObject.transform.position;
             Quaternion rotation = gameObject.transform.rotation;
-            gridManager.PlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
+            bool isValid = gridManager.TryPlacePrefabOnGrid(new Vector3(position.x, 0.001f, position.z), rotation, buildingType, boxCollider);
             ApplyMaterialToPreview(gridManager.GridSettings.UnbuildableMaterial);
+
+            if (!isValid)
+                return false;
+
             gameObject.SetActive(false);
 
             previewManager.HidePreview();
@@ -118,11 +121,37 @@ namespace GridSystem.Visualization
             transform.rotation = originalRotation;
         }
 
-        private void UpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
+        private void InitializationUpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
         {
-            Material targetMaterial = GetTargetMaterial(isBuildable);
+            Material targetMaterial;
+            targetMaterial = GetTargetMaterial(isBuildable);
+
             ApplyMaterialToPreview(targetMaterial);
 
+
+            UpdatePositionIfChanged(currentCellIndex);
+        }
+
+        private void UpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
+        {
+            Material targetMaterial;
+            if (!gridManager.IsBoundsValid(boxCollider.bounds))
+            {
+                targetMaterial = GetTargetMaterial(false);
+            }
+            else
+            {
+                targetMaterial = GetTargetMaterial(isBuildable);
+            }
+
+            ApplyMaterialToPreview(targetMaterial);
+
+
+            UpdatePositionIfChanged(currentCellIndex);
+        }
+
+        private void UpdatePositionIfChanged(int currentCellIndex)
+        {
             if (currentCellIndex != previousCellIndex && currentCellIndex != -1)
             {
                 Vector3 gridPosition = gridManager.GetGridPosition(currentCellIndex);

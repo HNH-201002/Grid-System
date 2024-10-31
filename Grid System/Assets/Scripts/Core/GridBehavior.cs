@@ -42,18 +42,24 @@ namespace GridSystem.Core
         }
 
         /// <inheritdoc/>
-        public void PlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
+        public bool TryPlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
             Bounds bounds = boxCollider.bounds;
 
+            if (!IsBoundsValid(bounds))
+                return false;
+
             int xIndexCount;
             int zIndexCount;
-            List<int> gridIndex;
+            List<int> gridIndexes;
 
-            (xIndexCount, zIndexCount, gridIndex) = GetGridIndexesFromBounds(bounds);
+            (xIndexCount, zIndexCount, gridIndexes) = GetGridIndexesFromBounds(bounds);
 
-            if (AreIndexesOccupied(gridIndex))
-                return;
+            if (gridIndexes.Count <= 0)
+                return false;
+
+            if (AreIndexesOccupied(gridIndexes))
+                return false;
 
             Building building = buildingManager.Build(buildingType);
             building.transform.position = position;
@@ -65,9 +71,11 @@ namespace GridSystem.Core
             xSize = xSize % 2 == 0 ? xSize + 1 : xSize;
             zSize = zSize % 2 == 0 ? zSize + 1 : zSize;
 
-            building.Initialize(xSize, zSize, gridIndex);
+            building.Initialize(xSize, zSize, gridIndexes);
 
-            SetGridOccupied(gridIndex, true, building);
+            SetGridOccupied(gridIndexes, true, building);
+
+            return true;
         }
 
         private bool AreIndexesOccupied(List<int> indexes)
@@ -85,6 +93,8 @@ namespace GridSystem.Core
         /// <inheritdoc/>
         public bool IsIndexOccupied(int index)
         {
+            if (index < 0) return false;
+
             return occupiedIndexes.Contains(index);
         }
 
@@ -109,6 +119,22 @@ namespace GridSystem.Core
             }
         }
 
+        public bool IsBoundsValid(Bounds bounds)
+        {
+            Vector3 minScaled = gridManager.MinScaled;
+            int gridWidth = gridManager.GridWidth;
+            int xStartIndex = Mathf.FloorToInt((bounds.min.x - minScaled.x) / gridManager.GridSizeX);
+            int zStartIndex = Mathf.FloorToInt((bounds.min.z - minScaled.z) / gridManager.GridSizeZ);
+
+            int xEndIndex = Mathf.FloorToInt((bounds.max.x - minScaled.x) / gridManager.GridSizeX);
+            int zEndIndex = Mathf.FloorToInt((bounds.max.z - minScaled.z) / gridManager.GridSizeZ);
+
+            int gridIndexMax = xEndIndex * gridWidth + zEndIndex;
+            int gridIndexMin = xStartIndex * gridWidth + zEndIndex;
+
+            return !(xStartIndex < 0 || zStartIndex < 0 || xEndIndex >= gridWidth || zEndIndex >= gridWidth || gridIndexMin < 0 || gridIndexMax > grids.Count);
+        }
+
         private (int xCount, int zCount, List<int> indexes) GetGridIndexesFromBounds(Bounds bounds)
         {
             List<int> indexes = new List<int>();
@@ -131,10 +157,7 @@ namespace GridSystem.Core
                 {
                     int gridIndex = xIndex * gridWidth + zIndex;
 
-                    if (gridIndex >= 0 && gridIndex < grids.Count)
-                    {
-                        indexes.Add(gridIndex);
-                    }
+                    indexes.Add(gridIndex);
                 }
             }
 
@@ -151,7 +174,6 @@ namespace GridSystem.Core
 
             if (xIndex < 0 || zIndex < 0 || gridIndex >= grids.Count)
             {
-                Debug.LogWarning("Invalid grid index: " + gridIndex);
                 return -1;
             }
 

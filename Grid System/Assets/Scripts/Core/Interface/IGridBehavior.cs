@@ -29,7 +29,7 @@ namespace GridSystem.Core
         /// <summary>
         /// Places a building on the grid if the area is not occupied.
         /// </summary>
-        public void PlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider);
+        public bool TryPlaceBuilding(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider);
 
         /// <summary>
         /// Gets the index of the grid cell corresponding to the given world position.
@@ -66,5 +66,10 @@ namespace GridSystem.Core
         /// <param name="position">The world position to query.</param>
         /// <returns>The building at the specified position, or null if none exists.</returns>
         public Building GetBuildingAtGrid(Vector3 position);
+
+        /// <summary>
+        /// Whether bounds is valid or not.
+        /// </summary>
+        public bool IsBoundsValid(Bounds bounds);
     }
 }

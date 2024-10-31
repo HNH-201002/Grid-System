@@ -119,9 +119,9 @@ namespace GridSystem.Core
             return gridBehavior.GetGridIndex(position);
         }
 
-        public void PlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
+        public bool TryPlacePrefabOnGrid(Vector3 position, Quaternion rotation, BuildingType buildingType, BoxCollider boxCollider)
         {
-            gridBehavior.PlaceBuilding(position, rotation, buildingType, boxCollider);
+            return gridBehavior.TryPlaceBuilding(position, rotation, buildingType, boxCollider);
         }
 
         public Vector3 GetGridPosition(int gridIndex)
@@ -179,6 +179,11 @@ namespace GridSystem.Core
             initialSpawnPoint = gridBehavior.GetGridWorldPosition(gridBehavior.GetGridIndex(gridSettings.InitialSpawnPoint));
             var previewManager = new PreviewManager(this, gridBehavior, buildingPrefabData.Prefab);
             return new PreviewController(this, buildingPrefabData, previewManager, initialSpawnPoint);
+        }
+
+        public bool IsBoundsValid(Bounds bounds)
+        {
+            return gridBehavior.IsBoundsValid(bounds);
         }
 
         private void InitializeGrid()

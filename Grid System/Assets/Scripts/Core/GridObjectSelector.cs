@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System;
 using GridSystem.InputManagement;
 using GridSystem.Utilities;
@@ -55,24 +54,16 @@ namespace GridSystem.Core
 
         private void HandleGridObjectSelection()
         {
-            if (gridManager.CurrentGameState == GridState.Building) return;
-
-            if (IsPointerOverUI()) return;
+            if (gridManager.CurrentGameState == GridState.Building)
+                return;
 
             Vector3? position = raycastHandler.RaycastNow(mainCamera, inputHandler.GetInputPosition());
-            if (!position.HasValue) return;
+            if (!position.HasValue)
+                return;
 
             Building selectedObject = gridBehavior.GetBuildingAtGrid(position.Value);
 
             UpdateSelectedObject(selectedObject);
-        }
-
-        private bool IsPointerOverUI()
-        {
-            if (Input.touchCount > 0)
-                return EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId);
-
-            return EventSystem.current.IsPointerOverGameObject();
         }
 
         private void UpdateSelectedObject(Building selectedObject)

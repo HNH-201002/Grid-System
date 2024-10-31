@@ -1090,6 +1090,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingPrefabData: {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}
+--- !u!1 &726702012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 726702013}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &726702013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726702012}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.0532632, y: 2.385723, z: -0.30224764}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &868466010
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,8 +1467,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.3684897, y: -0.013653651, z: 0.0053118654, w: -0.92951643}
-  m_LocalPosition: {x: -12.743635, y: 58.125137, z: -38.530617}
+  m_LocalRotation: {x: -0.31381658, y: 0.6330107, z: -0.31281367, w: -0.6347947}
+  m_LocalPosition: {x: 6.7271748, y: 6.9113636, z: 0.37655973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2358,7 +2389,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -2375,14 +2406,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6697e1f8167fd7342973172fa33519ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridSettings: {fileID: 11400000, guid: e60aac6d584b2ce4ab99c81f38342834, type: 2}
   meshFilter: {fileID: 2003952094}
-  cellPerUnit: 50
-  buildableMaterial: {fileID: 2100000, guid: 93382faf3bfdc8a46a2880ca2bae3723, type: 2}
-  unbuildableMaterial: {fileID: 2100000, guid: 5baa92955043ec843bc5fb5db5041e5a, type: 2}
-  buildingDataList:
-  - {fileID: 11400000, guid: bbe3a4c963927c44e90613dde50df63d, type: 2}
-  - {fileID: 11400000, guid: 0225646924e9daa4d8f37cf4618dafe2, type: 2}
-  mainCamera: {fileID: 963194227}
 --- !u!114 &2003952098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2396,7 +2421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 2003952094}
-  cellPerUnit: 50
+  cellPerUnit: 5
 --- !u!65 &2003952099
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2714,3 +2739,4 @@ SceneRoots:
   - {fileID: 2003952095}
   - {fileID: 1118241561}
   - {fileID: 617636939}
+  - {fileID: 726702013}
