@@ -123,6 +123,8 @@ namespace GridSystem.Core
         {
             Vector3 minScaled = gridManager.MinScaled;
             int gridWidth = gridManager.GridWidth;
+            int gridHeight = gridManager.GridHeight;
+
             int xStartIndex = Mathf.FloorToInt((bounds.min.x - minScaled.x) / gridManager.GridSizeX);
             int zStartIndex = Mathf.FloorToInt((bounds.min.z - minScaled.z) / gridManager.GridSizeZ);
 
@@ -130,9 +132,9 @@ namespace GridSystem.Core
             int zEndIndex = Mathf.FloorToInt((bounds.max.z - minScaled.z) / gridManager.GridSizeZ);
 
             int gridIndexMax = xEndIndex * gridWidth + zEndIndex;
-            int gridIndexMin = xStartIndex * gridWidth + zEndIndex;
+            int gridIndexMin = xStartIndex * gridWidth + zStartIndex;
 
-            return !(xStartIndex < 0 || zStartIndex < 0 || xEndIndex >= gridWidth || zEndIndex >= gridWidth || gridIndexMin < 0 || gridIndexMax > grids.Count);
+            return !(xStartIndex < 0 || zStartIndex < 0 || xEndIndex >= gridWidth || zEndIndex >= gridHeight || gridIndexMin < 0 || gridIndexMax >= grids.Count);
         }
 
         private (int xCount, int zCount, List<int> indexes) GetGridIndexesFromBounds(Bounds bounds)

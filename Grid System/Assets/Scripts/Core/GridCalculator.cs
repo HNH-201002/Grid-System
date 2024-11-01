@@ -28,7 +28,7 @@ namespace GridSystem.Core
         /// - maxScaled: The maximum scaled boundary of the grid.
         /// - gridWidth: The total width of the grid in terms of cells.
         /// </returns>
-        public (float gridSizeX, float gridSizeZ, Vector3 minScaled, Vector3 maxScaled, int gridWidth) CalculateGridSize(Vector3 scale)
+        public (float gridSizeX, float gridSizeZ, Vector3 minScaled, Vector3 maxScaled, int gridWidth, int gridHeight) CalculateGridSize(Vector3 scale)
         {
             Bounds bounds = meshFilter.sharedMesh.bounds;
 
@@ -42,7 +42,8 @@ namespace GridSystem.Core
             gridSizeX = Mathf.Max(gridSizeX, minGridSize);
             gridSizeZ = Mathf.Max(gridSizeZ, minGridSize);
             int gridWidth = Mathf.FloorToInt((meshFilter.sharedMesh.bounds.size.x * transform.lossyScale.x) / gridSizeX);
-            return (gridSizeX, gridSizeZ, minScaled, maxScaled, gridWidth);
+            int gridHeight = Mathf.FloorToInt((meshFilter.sharedMesh.bounds.size.z * transform.lossyScale.z) / gridSizeZ);
+            return (gridSizeX, gridSizeZ, minScaled, maxScaled, gridWidth, gridHeight);
         }
 
         private Vector3 Multiply(Vector3 a, Vector3 b)

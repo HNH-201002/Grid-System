@@ -27,6 +27,7 @@ namespace GridSystem.Core
         public float GridSizeZ { get; private set; }
 
         public int GridWidth { get; private set; }
+        public int GridHeight { get; private set; }
 
         public Vector3 MinScaled { get; private set; }
         public Vector3 MaxScaled { get; private set; }
@@ -190,7 +191,7 @@ namespace GridSystem.Core
         {
             var calculator = gameObject.AddComponent<GridCalculator>();
             calculator.Initialize(meshFilter, gridSettings.CellPerUnit);
-            (GridSizeX, GridSizeZ, MinScaled, MaxScaled, GridWidth) =
+            (GridSizeX, GridSizeZ, MinScaled, MaxScaled, GridWidth, GridHeight) =
                 calculator.CalculateGridSize(transform.lossyScale);
         }
 

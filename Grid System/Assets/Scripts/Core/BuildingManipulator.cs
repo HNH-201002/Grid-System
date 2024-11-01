@@ -69,6 +69,8 @@ namespace GridSystem.Core
             {
                 building.transform.rotation = Quaternion.Euler(0, currentRotationAngle, 0);
             }
+
+            placementPreview.UpdatePreviewAppearance();
         }
 
         /// <summary>

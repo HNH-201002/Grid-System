@@ -5,6 +5,7 @@ using GridSystem.InputManagement;
 using GridSystem.Core.PhysicsCollider;
 using GridSystem.Utilities;
 using GridSystem.Core.Enum;
+using System.Collections;
 
 namespace GridSystem.Visualization
 {
@@ -74,10 +75,13 @@ namespace GridSystem.Visualization
             if (inputHandler.HasInputMoved(previousMousePosition))
             {
                 RaycastAndUpdateCellIndex();
+                if (raycastHandler.RaycastIfMoved(mainCamera, inputHandler.GetInputPosition()) == null)
+                    return;
+
                 previousMousePosition = inputHandler.GetInputPosition();
+                UpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
             }
 
-            UpdatePreviewAppearance(currentCellIndex, collisionHandler.IsBuildable);
         }
 
         private void RaycastAndUpdateCellIndex()
@@ -135,6 +139,7 @@ namespace GridSystem.Visualization
         private void UpdatePreviewAppearance(int currentCellIndex, bool isBuildable)
         {
             Material targetMaterial;
+
             if (!gridManager.IsBoundsValid(boxCollider.bounds))
             {
                 targetMaterial = GetTargetMaterial(false);
@@ -158,6 +163,18 @@ namespace GridSystem.Visualization
                 gameObject.transform.position = new Vector3(gridPosition.x, 0.5f, gridPosition.z);
                 previousCellIndex = currentCellIndex;
             }
+        }
+
+        public void UpdatePreviewAppearance()
+        {
+            Physics.SyncTransforms();
+            if (!gridManager.IsBoundsValid(boxCollider.bounds))
+            {
+                ApplyMaterialToPreview(GetTargetMaterial(false));
+                return;
+            }
+
+            ApplyMaterialToPreview(GetTargetMaterial(collisionHandler.IsBuildable));
         }
 
         /// <summary>
